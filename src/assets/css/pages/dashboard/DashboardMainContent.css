@@ -1,68 +1,274 @@
 /* DashboardMainContent.css */
 .dashboard-container {
-    background: #f9f9f9;
-    min-height: 100vh;
-  }
+  background-color: var(--bg-color);
+  min-height: 100vh;
+  margin: 0;
+  padding-top: 32px;
+}
+
+.dashboard-content {
+  background-color: var(--bg-color);
+  padding: 24px;
+}
+
+.error-alert {
+  margin-bottom: 24px;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border-color: var(--neutral-color);
+}
+
+.welcome-card {
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.1) 0%, rgba(0, 206, 255, 0.1) 100%);
+  color: var(--text-color);
+  border: 1px solid rgba(108, 92, 231, 0.2);
+  box-shadow: 0 2px 8px var(--shadow-color);
+  border-radius: 16px;
+  padding: 20px;
+  transition: background-color var(--transition-speed);
+  margin-bottom: 16px;
+  margin-top: 24px;
+}
+
+.welcome-title {
+  color: var(--text-color)!important;
+  margin-bottom: 8px;
+}
+
+.welcome-text {
+  color: var(--text-color);
+}
+
+.statistic-card {
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.1) 0%, rgba(0, 206, 255, 0.1) 100%);
+  color: var(--text-color);
+  border: 1px solid rgba(108, 92, 231, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  margin-bottom: 16px;
+}
+
+.statistic-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px var(--shadow-color);
+}
+
+.statistic-card-1 {
+  border-top: 4px solid var(--primary-color);
+}
+
+.statistic-card-2 {
+  border-top: 4px solid var(--secondary-color);
+}
+
+.statistic-card-3 {
+  border-top: 4px solid var(--neutral-color);
+}
+
+.statistic-card-4 {
+  border-top: 4px solid #FF7675; /* Keep as is, no matching app.css variable */
+}
+
+.statistic-title {
+  color: var(--text-color);
+}
+
+.statistic-icon-1 {
+  color: var(--primary-color);
+}
+
+.statistic-icon-2 {
+  color: var(--secondary-color);
+}
+
+.statistic-icon-3 {
+  color: var(--neutral-color);
+}
+
+.statistic-icon-4 {
+  color: #FF7675;
+}
+
+.statistic-value-3 {
+  color: var(--neutral-color);
+}
+
+.statistic-value-4 {
+  color: #FF7675;
+}
+
+.progress-bar-1 {
+  --antd-progress-stroke-color: var(--primary-color);
+  --antd-progress-trail-color: rgba(108, 92, 231, 0.1); /* Match --primary-color opacity */
+}
+
+.progress-bar-2 {
+  --antd-progress-stroke-color: var(--secondary-color);
+  --antd-progress-trail-color: rgba(0, 206, 255, 0.1);
+}
+
+.progress-bar-3 {
+  --antd-progress-stroke-color: var(--neutral-color);
+  --antd-progress-trail-color: rgba(1, 135, 134, 0.1);
+}
+
+.progress-bar-4 {
+  --antd-progress-stroke-color: #FF7675;
+  --antd-progress-trail-color: rgba(255, 118, 117, 0.1);
+}
+
+.statistic-text {
+  color: var(--text-color);
+}
+
+.volatility-card {
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.1) 0%, rgba(0, 206, 255, 0.1) 100%);
+  color: var(--text-color);
+  border: 1px solid rgba(108, 92, 231, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  margin-bottom: 16px;
+}
+
+.volatility-title {
+  color: var(--text-color);
+  font-size: 18px;
+}
+
+.volatility-icon {
+  color: var(--primary-color);
+}
+
+.volatility-tag-1 {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+}
+
+.volatility-tag-2 {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  border: none;
+}
+
+.volatility-tag-3 {
+  background-color: #FF7675;
+  color: var(--text-color);
+  border: none;
+}
+
+.volatility-tag-4 {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+}
+
+.recent-trade-title {
+  color: var(--text-color) !important;
+}
+
+.trade-description {
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.1) 0%, rgba(0, 206, 255, 0.1) 100%);
+  color: var(--text-color);
+  border: 1px solid rgba(108, 92, 231, 0.2);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.trade-description-text {
+  color: var(--text-color);
+}
+
+.card-hover {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  text-align: center;
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px var(--shadow-color);
+}
+
+.card-hover-1 {
+  border: 1px solid rgba(108, 92, 231, 0.2); /* --primary-color with opacity */
+  background-color: rgba(108, 92, 231, 0.1);
+}
+
+.card-hover-2 {
+  border: 1px solid rgba(108, 92, 231, 0.2);
+  background-color: rgba(0, 206, 255, 0.1);
+}
+
+.card-hover-3 {
+  border: 1px solid rgba(108, 92, 231, 0.2);
+  background-color: rgba(255, 118, 117, 0.1);
+}
+
+.card-hover-4 {
+  border: 1px solid rgba(63, 134, 0, 0.2); /* #3f8600 with opacity */
+  background-color: rgba(63, 134, 0, 0.1);
+}
+
+.card-icon-1 {
+  color: var(--primary-color);
+}
+
+.card-icon-2 {
+  color: var(--secondary-color);
+}
+
+.card-icon-3 {
+  color: #FF7675;
+}
+
+.card-icon-4 {
+  color: #3f8600;
+}
+
+.card-title {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--text-color)!important;
+}
+
+.card-text {
+  font-size: 12px;
+  color: var(--text-color);
+}
+
+/* Override Ant Design defaults */
+.ant-card {
+  background-color: var();
+  border-color: transparent;
+}
+
+.ant-descriptions-item-label {
+  color: var(--text-color)!important;
+}
+
+.ant-descriptions-item-content {
+  color: var(--neutral-color)!important;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
   .dashboard-content {
-    margin: 24px 16px;
-    padding: 24px;
+    margin: 16px;
+    padding: 16px;
   }
-  .error-alert {
-    margin-bottom: 24px;
-  }
-  .welcome-card {
-    background: transparent;
-    box-shadow: none;
-  }
+
   .welcome-title {
-    color: #6C5CE7;
-    margin-bottom: 8px;
+    font-size: 20px;
   }
-  .statistic-card {
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.1);
-  }
-  .statistic-card-title {
-    color: #6C5CE7;
-  }
-  .progress-stroke {
-    stroke: #6C5CE7;
-    stroke-dasharray: #F1F3FE;
-  }
-  .volatility-card {
-    border-radius: 16px;
-  }
-  .recent-trade-title {
-    color: #6C5CE7;
-  }
-  .recent-trade-card {
-    border-radius: 8px;
-    padding: 16px;
-  }
-  .trade-description {
-    border-radius: 8px;
-    padding: 16px;
-  }
-  .card-hover {
-    text-align: center;
-    border-radius: 12px;
-  }
-  .card-border {
-    border: 1px solid;
-  }
-  .card-background {
-    border-radius: 12px;
-  }
+
   .card-title {
-    margin-top: 8px;
-    font-size: 14px;
-  }
-  .card-text {
     font-size: 12px;
   }
-  @media (max-width: 768px) {
-    .dashboard-content {
-      margin: 16px;
-      padding: 16px;
-    }
+
+  .card-text {
+    font-size: 10px;
   }
+}

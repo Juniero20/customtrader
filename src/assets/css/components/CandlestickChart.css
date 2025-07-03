@@ -1,0 +1,156 @@
+/* src/assets/css/components/CandlestickChart.css */
+.candlestick-chart-card {
+  background-color: var(--bg-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px var(--shadow-color, rgba(0, 0, 0, 0.3));
+  transition: box-shadow var(--transition-speed, 0.3s);
+  margin-top: 32px;
+}
+
+.candlestick-chart-title {
+  color: var(--text-color, whitesmoke) !important;
+  margin: 0;
+  font-size: 18px;
+}
+
+.candlestick-chart-controls {
+  margin-bottom: 16px;
+}
+
+.candlestick-chart-select,
+.candlestick-chart-radio-group {
+  width: 100%;
+}
+
+
+.candlestick-chart-loading,
+.candlestick-chart-no-data {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px 0;
+  background-color: var(--card-bg, rgba(255, 255, 255, 0.05));
+  border: 1px dashed var(--input-bg, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+}
+
+.candlestick-chart-no-data-text {
+  color: var(--text-color, whitesmoke);
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+.candlestick-chart-crosshair {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+  background: var(--card-bg, rgba(255, 255, 255, 0.05));
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1px solid var(--input-bg, rgba(255, 255, 255, 0.1));
+  color: var(--text-color, whitesmoke);
+}
+
+.candlestick-chart-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  flex-wrap: wrap;
+  color: var(--text-color, whitesmoke);
+  opacity: 0.7;
+}
+
+/* Ant Design overrides */
+.ant-card {
+  background-color: var(--card-bg, rgba(255, 255, 255, 0.05));
+}
+
+.ant-select-selector {
+  background-color: var(--input-bg, rgba(255, 255, 255, 0.1)) !important;
+  color: var(--text-color, whitesmoke);
+  border-color: var(--input-bg, rgba(255, 255, 255, 0.1)) !important;
+}
+
+.ant-select-selection-item,
+.ant-select-selection-placeholder {
+  color: var(--text-color, whitesmoke);
+}
+
+.ant-radio-button-wrapper {
+  background-color: var(--input-bg, rgba(255, 255, 255, 0.1));
+  color: var(--text-color, whitesmoke);
+  border-color: var(--input-bg, rgba(255, 255, 255, 0.1));
+}
+
+.ant-radio-button-wrapper-checked {
+  background-color: var(--primary-color, #6C5CE7);
+  color: var(--text-color, whitesmoke);
+  border-color: var(--primary-color, #6C5CE7);
+}
+
+/* ApexCharts overrides */
+.apexcharts-canvas {
+  background: var(--card-bg, rgba(255, 255, 255, 0.05)) !important;
+}
+
+.apexcharts-tooltip {
+  background: var(--card-bg, rgba(255, 255, 255, 0.05)) !important;
+  color: var(--text-color, whitesmoke) !important;
+  border: 1px solid var(--input-bg, rgba(255, 255, 255, 0.1)) !important;
+}
+
+.apexcharts-xaxis text,
+.apexcharts-yaxis text {
+  fill: var(--text-color, whitesmoke) !important;
+}
+
+.apexcharts-grid line {
+  stroke: var(--input-bg, rgba(255, 255, 255, 0.1)) !important;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .candlestick-chart-card {
+    padding: 12px;
+  }
+
+  .candlestick-chart-title {
+    font-size: 16px;
+  }
+
+  .candlestick-chart-container,
+  .candlestick-chart-loading,
+  .candlestick-chart-no-data {
+    height: 400px;
+  }
+
+  .candlestick-chart-crosshair {
+    top: 10px;
+    right: 10px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .candlestick-chart-footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+/* Responsive header styles */
+@media (max-width: 576px) {
+  .candlestick-chart-header {
+    gap: 4px !important;
+  }
+
+  .candlestick-chart-title {
+    font-size: 14px !important;
+  }
+
+  .candlestick-chart-radio-group {
+    font-size: 12px !important;
+  }
+}

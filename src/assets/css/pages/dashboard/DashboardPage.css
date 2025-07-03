@@ -1,0 +1,74 @@
+/* DashboardPage.css */
+.dashboard-page-layout {
+  background-color: var(--bg-color)!important; 
+  min-height: 100vh;
+}
+
+.dashboard-page-sider {
+  background-color: var(--bg-color); /* Dark, semi-transparent background */
+  color: var(--text-color);
+  overflow: auto;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 64px; /* Adjust for header height */
+  bottom: 0;
+  z-index: 100;
+  width: 150px; /* Default width */
+  transition: width var(--transition-speed);
+}
+
+.dashboard-page-sider-collapsed {
+  width: 0;
+}
+
+
+.ant-layout-sider-children {
+  background-color: var(--card-bg);
+}
+
+.dashboard-page-content {
+  background-color: var(--bg-color)!important; 
+  margin-left: 150px; 
+  margin-top: 0; 
+  bottom: 0;
+  padding: 0;
+  min-height: calc(100vh - 64px);
+  overflow-y: auto;
+  transition: margin-left var(--transition-speed);
+}
+
+.dashboard-page-content-collapsed {
+  margin-left: 0;
+}
+
+/* Mobile Drawer */
+.ant-drawer-content {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+.ant-drawer-header {
+  background-color: var(--card-bg);
+  border-bottom: 1px solid var(--input-bg);
+  padding: 0;
+}
+
+.ant-drawer-title {
+  color: var(--text-color);
+}
+
+.ant-drawer-body {
+  padding: 0;
+}
+
+/* Responsive styles */
+@media (max-width: 576px) {
+  .dashboard-page-sider {
+    display: none; /* Hide sider on mobile */
+  }
+
+  .dashboard-page-content {
+    margin-left: 0; /* No margin on mobile */
+  }
+}

@@ -1,0 +1,453 @@
+/* MainSection.css */
+.main-section {
+  padding: 0 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow-x: hidden;
+  background-color: var(--bg-gradient);
+  color: var(--text-color);
+}
+
+/* Hero Section */
+.hero-section {
+  padding: 100px 0;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.1) 0%, rgba(0, 206, 255, 0.1) 100%);
+  border-radius: 16px;
+  margin: 24px 0;
+  color: var(--text-color);
+  border: 1px solid rgba(108, 92, 231, 0.2);
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  margin-bottom: 16px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--text-color);
+}
+
+.hero-paragraph {
+  font-size: 1.3rem;
+  margin: 0 auto 32px;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 700px;
+}
+
+.hero-buttons {
+  margin-top: 16px;
+}
+
+.hero-button-start {
+  background: #FF7675;
+  border-color: #FF7675;
+  font-weight: 600;
+  height: 48px;
+  padding: 0 32px;
+  color: var(--text-color);
+  transition: background-color var(--transition-speed);
+}
+
+.hero-button-dbot {
+  color: var(--text-color);
+  border-color: var(--text-color);
+  font-weight: 600;
+  height: 48px;
+  padding: 0 32px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background-color var(--transition-speed), border-color var(--transition-speed);
+}
+
+/* Trading Features */
+.features-divider {
+  color: var(--primary-color);
+}
+
+.features-title {
+  color: var(--primary-color);
+}
+
+.feature-card {
+  text-align: center;
+  height: 100%;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.1);
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.1) 0%, rgba(0, 206, 255, 0.1) 100%);
+  color: var(--text-color);
+  border: 1px solid rgba(108, 92, 231, 0.2);
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 6px 16px rgba(108, 92, 231, 0.2);
+}
+
+.feature-icon {
+  margin-bottom: 16px;
+  transition: transform var(--transition-speed);
+}
+
+.feature-card:hover .feature-icon {
+  transform: scale(1.1);
+}
+
+.feature-icon-1 {
+  font-size: 42px;
+  color: var(--primary-color);
+}
+
+.feature-icon-2 {
+  font-size: 42px;
+  color: var(--secondary-color);
+}
+
+.feature-icon-3 {
+  font-size: 42px;
+  color: #FF7675;
+}
+
+.feature-icon-4 {
+  font-size: 42px;
+  color: var(--primary-color);
+}
+
+.feature-title {
+  color: #2D3436;
+}
+
+.feature-description {
+  color: #8C8C8C;
+}
+
+.feature-learn-more {
+  margin-top: 16px;
+  color: var(--primary-color);
+  font-weight: 500;
+  transition: opacity var(--transition-speed);
+}
+
+.feature-card:hover .feature-learn-more {
+  opacity: 1;
+}
+
+/* Volatility Indices & Education */
+.volatility-education-section {
+  margin: 80px 0;
+}
+
+.volatility-title,
+.education-title {
+  color: var(--primary-color);
+}
+
+.volatility-paragraph {
+  font-size: 16px;
+}
+
+.volatility-item {
+  padding: 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  transition: transform var(--transition-speed);
+}
+
+.volatility-item:hover {
+  transform: translateX(4px);
+}
+
+.volatility-item:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--text-color);
+}
+
+.volatility-item:nth-child(even) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--text-color);
+}
+
+.volatility-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.volatility-dot-1 {
+  background: var(--primary-color);
+}
+
+.volatility-dot-2 {
+  background: var(--secondary-color);
+}
+
+.volatility-dot-3 {
+  background: #FF7675;
+}
+
+.volatility-dot-4 {
+  background: var(--primary-color);
+}
+
+.volatility-dot-5 {
+  background: var(--secondary-color);
+}
+
+.volatility-text {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.education-container, .volatility-container {
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.1) 0%, rgba(0, 206, 255, 0.1) 100%);
+  padding: 32px;
+  border-radius: 16px;
+  border: 1px solid rgba(108, 92, 231, 0.2);
+  height: 100%;
+}
+
+.education-item {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.education-item:hover {
+  transform: translateX(8px);
+  box-shadow: 0 4px 16px rgba(108, 92, 231, 0.15);
+}
+
+.education-icon {
+  color: var(--primary-color);
+  font-size: 22px;
+  margin-right: 16px;
+}
+
+.education-text {
+  font-size: 15px;
+}
+
+/* Testimonials */
+.testimonials-divider {
+  color: var(--primary-color);
+}
+
+.testimonials-title {
+  color: var(--primary-color);
+}
+
+.testimonial-card {
+  border-radius: 16px;
+}
+
+.testimonial-card:nth-child(odd) {
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.1) 0%, rgba(0, 206, 255, 0.1) 100%);
+  border: 1px solid rgba(108, 92, 231, 0.2);
+  color: var(--text-color);
+}
+
+.testimonial-card:nth-child(even) {
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.1) 0%, rgba(0, 206, 255, 0.1) 100%);
+  border: 1px solid rgba(108, 92, 231, 0.2);
+}
+
+.testimonial-avatar-1 {
+  background: var(--primary-color);
+}
+
+.testimonial-avatar-2 {
+  background: var(--secondary-color);
+}
+
+.testimonial-avatar-3 {
+  background: #FF7675;
+}
+
+.testimonial-avatar {
+  font-size: 36px;
+  margin-bottom: 16px;
+}
+
+.testimonial-name {
+  margin-bottom: 4px;
+}
+
+.testimonial-role {
+  color: var(--text-color);
+}
+
+.testimonial-content {
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+.testimonial-quote-1 {
+  border-left: 4px solid var(--primary-color);
+}
+
+.testimonial-quote-2 {
+  border-left: 4px solid var(--secondary-color);
+}
+
+.testimonial-quote-3 {
+  border-left: 4px solid #FF7675;
+}
+
+.testimonial-quote {
+  padding-left: 24px;
+  margin: 0;
+}
+
+/* Final CTA */
+.cta-section {
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.1) 0%, rgba(0, 206, 255, 0.1) 100%);
+  border-radius: 16px;
+  padding: 64px 24px;
+  margin-bottom: 80px;
+  text-align: center;
+  border: 1px solid rgba(108, 92, 231, 0.2);
+}
+
+.cta-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.cta-title {
+  color: var(--primary-color);
+  margin-bottom: 16px;
+}
+
+.cta-paragraph {
+  font-size: 18px;
+  margin-bottom: 32px;
+}
+
+.cta-button {
+  height: 50px;
+  padding: 0 40px;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* Contact Section */
+.contact-divider {
+  color: var(--text-color);
+}
+
+.contact-title {
+  color: var(--text-color);
+}
+
+.contact-card {
+  border-radius: 16px;
+  text-align: center;
+  transition: transform var(--transition-speed);
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.1) 0%, rgba(0, 206, 255, 0.1) 100%);
+  border: 1px solid rgba(108, 92, 231, 0.2);
+}
+
+.contact-card:hover {
+  transform: translateY(-8px);
+}
+
+.contact-icon-phone {
+  font-size: 36px;
+  color: var(--primary-color);
+  margin-bottom: 16px;
+}
+
+.contact-icon-email {
+  font-size: 36px;
+  color: var(--secondary-color);
+  margin-bottom: 16px;
+}
+
+.contact-icon-social {
+  font-size: 28px;
+}
+
+.contact-icon-twitter {
+  color: #1DA1F2;
+}
+
+.contact-icon-facebook {
+  color: #4267B2;
+}
+
+.contact-icon-instagram {
+  color: #E1306C;
+}
+
+.contact-title-card {
+  margin-bottom: 8px;
+}
+
+.contact-text {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.contact-paragraph {
+  margin-top: 8px;
+  color: #8C8C8C;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-paragraph {
+    font-size: 1.1rem;
+  }
+
+  .main-section {
+    padding: 0 16px;
+  }
+}
+/* Replace all existing text colors with var(--text-color) */
+.hero-title,
+.hero-paragraph,
+.features-title,
+.feature-title,
+.feature-description,
+.feature-learn-more,
+.volatility-title,
+.volatility-paragraph,
+.volatility-text,
+.education-title,
+.education-text,
+.testimonials-title,
+.testimonial-name,
+.testimonial-role,
+.testimonial-content,
+.testimonial-quote,
+.cta-title,
+.cta-paragraph,
+.contact-title,
+.contact-title-card,
+.contact-text,
+.contact-paragraph {
+  color: var(--text-color) !important;
+}
+
+
+.volatility-item:nth-child(odd),
+.volatility-item:nth-child(even),
+.education-item {
+  background: var(--card-bg) !important;
+}

@@ -4,6 +4,7 @@ import { MenuOutlined } from '@ant-design/icons';
 import DashboardHeader from './DashboardHeader';
 import DashboardSidebar from './DashboardSidebar';
 import { Outlet } from 'react-router-dom';
+import '../../assets/css/pages/dashboard/DashboardPage.css';
 
 const { Sider, Content } = Layout;
 
@@ -16,35 +17,26 @@ const DashboardPage = () => {
   };
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout className="dashboard-page-layout">
       <DashboardHeader
         collapsed={collapsed}
         setCollapsed={setCollapsed}
         toggleDrawer={toggleDrawer}
         drawerVisible={drawerVisible}
       />
-      <Layout>
+      <Layout className="dashboard-page-layout">
         {/* Desktop Sidebar */}
         <Sider
           collapsible
           collapsed={collapsed}
           onCollapse={() => setCollapsed(!collapsed)}
-          width={250}
+          width={150}
           breakpoint="sm" // Triggers at ≤576px
           collapsedWidth={0}
           onBreakpoint={(broken) => {
             setCollapsed(broken); // Auto-collapse on mobile
           }}
-          style={{
-            background: '#fff',
-            overflow: 'auto',
-            height: '100vh',
-            position: 'fixed', // Keep sidebar fixed
-            left: 0,
-            top: 64, // Adjust for header height
-            bottom: 0,
-            zIndex: 100,
-          }}
+          className={`dashboard-page-sider ${collapsed ? 'dashboard-page-sider-collapsed' : ''}`}
         >
           <DashboardSidebar />
         </Sider>
@@ -55,25 +47,15 @@ const DashboardPage = () => {
           closable={true}
           onClose={toggleDrawer}
           visible={drawerVisible}
-          width={250}
-          bodyStyle={{ padding: 0 }}
+          width={150}
           zIndex={1000} // Ensure drawer is above content
-          styles={{
-            header: { padding: '16px', borderBottom: '1px solid #f0f0f0' },
-          }}
           title="Menu"
         >
           <DashboardSidebar />
         </Drawer>
 
         <Content
-          style={{
-            marginLeft: collapsed ? 0 : window.innerWidth > 576 ? 250 : 0,
-            padding: '24px',
-            transition: 'margin-left 0.2s',
-            minHeight: 'calc(100vh - 64px)', // Adjust for header
-            overflowY: 'auto',
-          }}
+          className={`dashboard-page-content ${collapsed ? 'dashboard-page-content-collapsed' : ''}`}
         >
           <Outlet />
         </Content>

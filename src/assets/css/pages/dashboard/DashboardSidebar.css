@@ -1,0 +1,73 @@
+/* DashboardSidebar.css */
+.dashboard-sidebar-menu {
+  background-color: var(--bg-color); 
+  color: var(--text-color);
+  border-right: 0;
+  height: 100%; 
+}
+
+/* Override Ant Design Menu defaults */
+.ant-menu {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color);
+}
+
+.ant-menu-item {
+  color: var(--text-color);
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+.ant-menu-item:hover {
+  background-color: var(--hover-accent);
+  color: var(--text-color);
+}
+
+.ant-menu-item-selected {
+  background-color: var(--primary-color) !important;
+  color: var(--text-color);
+}
+
+.ant-menu-item-selected .anticon {
+  color: var(--text-color);
+}
+
+.ant-menu-item .anticon {
+  color: var(--text-color);
+  font-size: 16px;
+}
+
+.ant-menu-title-content {
+  font-size: 14px;
+}
+
+/* Ensure menu items are readable in Drawer */
+.ant-drawer .ant-menu {
+  background-color: transparent;
+}
+
+.ant-drawer .ant-menu-item {
+  color: var(--text-color);
+}
+
+/* Responsive styles */
+@media (max-width: 576px) {
+  .dashboard-sidebar-menu {
+    padding: 0; /* Adjust padding for Drawer */
+  }
+  .ant-menu-title-content {
+    display: none;
+  }
+  .ant-menu-item {
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ant-menu-item {
+    font-size: 12px;
+  }
+
+  .ant-menu-item .anticon {
+    font-size: 14px;
+  }
+}

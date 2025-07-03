@@ -13,9 +13,9 @@ import {
   Tag,
   Alert,
   Descriptions,
+  theme
 } from 'antd';
 import {
-  DollarOutlined,
   ArrowUpOutlined,
   LineChartOutlined,
   WalletOutlined,
@@ -25,10 +25,9 @@ import {
   NumberOutlined,
 } from '@ant-design/icons';
 import { useUser } from '../../context/AuthContext';
-import VolatilityMonitor from '../../components/VolatilityMonitor';
+import VolatilityComparisonChart from '../../components/TickDataGraph';
 import { ConfigProvider } from 'antd';
-import '../../assets/css/pages/dashboard/DashboardMainContent.css'; 
-import Notification from '../../utils/Notification';
+import '../../assets/css/pages/dashboard/DashboardMainContent.css';
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
@@ -43,14 +42,12 @@ const DashboardMainContent = () => {
     numTransactions: 0,
   });
   const [error, setError] = useState(null);
-  const [notification, setNotification] = useState({
-    type: '',
-    content: '',
-    trigger: false,
-  });
   const [loading] = useState(false);
   const accountId = activeAccount?.loginid;
   const isLoading = authLoading || loading;
+  const { token } = theme.useToken();
+  const colorPrimary = token.colorPrimary;
+
   const formatTimestamp = (timestamp) => {
     return new Date(timestamp * 1000).toLocaleString('en-US', {
       year: 'numeric',
@@ -63,12 +60,6 @@ const DashboardMainContent = () => {
     });
   };
 
-  const showNotification = (type, content) => {
-    setNotification({ type, content, trigger: true });
-    setTimeout(() => {
-      setNotification((prev) => ({ ...prev, trigger: false }));
-    }, 500);
-  };
   useEffect(() => {
     if (accountId) {
       const cachedProfitTable = localStorage.getItem(`profitTable_${accountId}`);
@@ -85,6 +76,7 @@ const DashboardMainContent = () => {
       }
     }
   }, [accountId]);
+
   useEffect(() => {
     if (!accountId) return;
     const fetchProfitTable = async () => {
@@ -103,7 +95,6 @@ const DashboardMainContent = () => {
       try {
         const response = await sendAuthorizedRequest(payload);
         if (response.error) {
-          showNotification('error', response.error.message || 'Failed to fetch profit table');
           throw new Error(response.error.message);
         }
         const profitTableData = response.profit_table?.transactions || [];
@@ -115,10 +106,6 @@ const DashboardMainContent = () => {
           totalPayouts: profitTableData.reduce((sum, tx) => sum + (tx.payout || 0), 0),
           numTransactions: profitTableData.length,
         });
-        showNotification('success', 'Profit table loaded successfully!');
-        if (profitTableData.length === 0) {
-          showNotification('warning', 'No transactions found for the last 30 days.');
-        }
       } catch (err) {
         console.error('Error fetching profit table:', err, err.stack);
       }
@@ -127,29 +114,34 @@ const DashboardMainContent = () => {
     const interval = setInterval(fetchProfitTable, 30000);
     return () => clearInterval(interval);
   }, [accountId, sendAuthorizedRequest]);
+
   const latestLosingTrade = transactions
     .filter((tx) => tx.sell_price === 0)
     .sort((a, b) => b.sell_time - a.sell_time)[0];
   const latestWinningTrade = transactions
     .filter((tx) => tx.sell_price > 0)
     .sort((a, b) => b.sell_time - a.sell_time)[0];
+
   if (!user || isLoading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <div className="loading-container">
         <Spin size="large" />
       </div>
     );
   }
+
   const percentageGrowth = stats.totalPurchases
     ? Math.min(((stats.totalProfitLoss / stats.totalPurchases) * 100).toFixed(2), 100)
     : 0;
   const readableSessionDuration = 'in the last 30 days';
+
   return (
     <ConfigProvider
       theme={{
         token: {
           colorPrimary: '#6C5CE7',
           borderRadius: 8,
+          colorBgContainer: 'transparent', // Ensure no white backgrounds
         },
         components: {
           Card: {
@@ -161,11 +153,6 @@ const DashboardMainContent = () => {
     >
       <div className="dashboard-container">
         <Content className="dashboard-content">
-          <Notification
-            type={notification.type}
-            content={notification.content}
-            trigger={notification.trigger}
-          />
           {error && (
             <Alert
               message="Error"
@@ -175,166 +162,140 @@ const DashboardMainContent = () => {
               className="error-alert"
             />
           )}
-          <Row gutter={[24, 24]} style={{ marginBottom: 24 }}>
+          <Row gutter={[24, 24]} className="welcome-row">
             <Col span={24}>
               <Card className="welcome-card">
                 <Title level={2} className="welcome-title">
                   Welcome back, {user?.fullname || 'Trader'}!
                 </Title>
-                <Text type="secondary">Here's your trading overview for the last 30 days</Text>
+                <Text className="welcome-text">Here's your trading overview for the last 30 days</Text>
               </Card>
             </Col>
           </Row>
-          <Row gutter={[24, 24]} style={{ marginBottom: 24 }}>
+          <Row gutter={[24, 24]} className="statistic-row">
             <Col xs={24} sm={12} md={6}>
-              <Card
-                hoverable
-                className="statistic-card"
-                style={{
-                  borderTop: '4px solid #6C5CE7',
-                }}
-              >
+              <Card hoverable className="statistic-card statistic-card-1">
                 <Statistic
                   title={
                     <Space>
-                      <WalletOutlined style={{ color: '#6C5CE7' }} />
-                      <Text>Account Balance</Text>
+                      <WalletOutlined className="statistic-icon-1" />
+                      <Text className="statistic-title">Account Balance</Text>
                     </Space>
                   }
                   value={balance}
                   precision={2}
                   prefix="$"
-                  valueStyle={{ fontSize: 24, fontWeight: 600 }}
+                  valueStyle={{ fontSize: 24, fontWeight: 600, color: colorPrimary }}
                 />
                 <Progress
                   percent={balance ? (balance / (balance + stats.totalPurchases)) * 100 : 0}
                   status="active"
                   showInfo={false}
-                  strokeColor="#6C5CE7"
-                  trailColor="#F1F3FE"
+                  className="progress-bar-1"
                 />
-                <Text type="secondary">Available balance</Text>
+                <Text className="statistic-text">Available balance</Text>
               </Card>
             </Col>
             <Col xs={24} sm={12} md={6}>
-              <Card
-                hoverable
-                className="statistic-card"
-                style={{
-                  borderTop: '4px solid #00CEFF',
-                }}
-              >
+              <Card hoverable className="statistic-card statistic-card-2">
                 <Statistic
                   title={
                     <Space>
-                      <SwapOutlined style={{ color: '#00CEFF' }} />
-                      <Text>Total Purchases</Text>
+                      <SwapOutlined className="statistic-icon-2" />
+                      <Text className="statistic-title">Total Purchases</Text>
                     </Space>
                   }
                   value={stats.totalPurchases}
                   precision={2}
                   prefix="$"
-                  valueStyle={{ fontSize: 24, fontWeight: 600 }}
+                  valueStyle={{ fontSize: 24, fontWeight: 600, color: colorPrimary }}
                 />
                 <Progress
                   percent={stats.totalPurchases ? (stats.totalPurchases / (stats.totalPurchases + balance)) * 100 : 0}
                   status="normal"
                   showInfo={false}
-                  strokeColor="#00CEFF"
-                  trailColor="#E8FAFF"
+                  className="progress-bar-2"
                 />
-                <Text type="secondary">
+                <Text className="statistic-text">
                   {stats.numTransactions} transactions {readableSessionDuration}
                 </Text>
               </Card>
             </Col>
             <Col xs={24} sm={12} md={6}>
-              <Card
-                hoverable
-                className="statistic-card"
-                style={{
-                  borderTop: '4px solid #3f8600',
-                }}
-              >
+              <Card hoverable className="statistic-card statistic-card-3">
                 <Statistic
                   title={
                     <Space>
-                      <ArrowUpOutlined style={{ color: '#3f8600' }} />
-                      <Text>Profit Growth</Text>
+                      <ArrowUpOutlined className="statistic-icon-3" />
+                      <Text className="statistic-title">Profit Growth</Text>
                     </Space>
                   }
                   value={stats.totalProfitLoss}
                   precision={2}
                   prefix="$"
-                  valueStyle={{ color: '#3f8600', fontSize: 24, fontWeight: 600 }}
+                  valueStyle={{ fontSize: 24, fontWeight: 600, color: colorPrimary }}
+                  className="statistic-value-3"
                 />
                 <Progress
                   percent={percentageGrowth}
                   status={percentageGrowth >= 0 ? 'active' : 'exception'}
                   showInfo={false}
-                  strokeColor={percentageGrowth >= 0 ? '#3f8600' : '#FF7675'}
-                  trailColor={percentageGrowth >= 0 ? '#E6FFED' : '#FFEEED'}
+                  className="progress-bar-3"
                 />
-                <Text type="secondary">
+                <Text className="statistic-text">
                   {percentageGrowth}% Growth {readableSessionDuration}
                 </Text>
               </Card>
             </Col>
             <Col xs={24} sm={12} md={6}>
-              <Card
-                hoverable
-                className="statistic-card"
-                style={{
-                  borderTop: '4px solid #FF7675',
-                }}
-              >
+              <Card hoverable className="statistic-card statistic-card-4">
                 <Statistic
                   title={
                     <Space>
-                      <LineChartOutlined style={{ color: '#FF7675' }} />
-                      <Text>Total Payouts</Text>
+                      <LineChartOutlined className="statistic-icon-4" />
+                      <Text className="statistic-title">Total Payouts</Text>
                     </Space>
                   }
                   value={stats.totalPayouts}
                   precision={2}
                   prefix="$"
-                  valueStyle={{ color: '#FF7675', fontSize: 24, fontWeight: 600 }}
+                  valueStyle={{ fontSize: 24, fontWeight: 600, color: colorPrimary }}
+                  className="statistic-value-4"
                 />
                 <Progress
                   percent={stats.totalPayouts ? (stats.totalPayouts / (stats.totalPayouts + stats.totalPurchases)) * 100 : 0}
                   status="exception"
                   showInfo={false}
-                  strokeColor="#FF7675"
-                  trailColor="#FFEEED"
+                  className="progress-bar-4"
                 />
-                <Text type="secondary">
+                <Text className="statistic-text">
                   {stats.numTransactions} transactions {readableSessionDuration}
                 </Text>
               </Card>
             </Col>
           </Row>
-          <Row gutter={[24, 24]}>
+          <Row gutter={[24, 24]} className="volatility-row">
             <Col span={24}>
               <Card
                 title={
                   <Space>
-                    <LineChartOutlined style={{ color: '#6C5CE7' }} />
-                    <Text strong style={{ fontSize: 18 }}>
-                      Volatility Index Monitor
+                    <LineChartOutlined className="volatility-icon" />
+                    <Text strong className="volatility-title">
+                      Tick Data chart
                     </Text>
                   </Space>
                 }
                 className="volatility-card"
                 extra={
                   <Space>
-                    <Tag color="#6C5CE7">R_10</Tag>
-                    <Tag color="#00CEFF">R_25</Tag>
-                    <Tag color="#FF7675">R_50</Tag>
-                    <Tag color="#6C5CE7">R_100</Tag>
+                    <Tag className="volatility-tag-1">R_10</Tag>
+                    <Tag className="volatility-tag-2">R_25</Tag>
+                    <Tag className="volatility-tag-3">R_50</Tag>
+                    <Tag className="volatility-tag-4">R_100</Tag>
                   </Space>
                 }
               >
-                <VolatilityMonitor />
+                <VolatilityComparisonChart />
                 <Divider />
                 <Row gutter={[24, 24]}>
                   <Col xs={24} md={12}>
@@ -361,7 +322,7 @@ const DashboardMainContent = () => {
                           </Descriptions.Item>
                         </Descriptions>
                       ) : (
-                        <Text type="secondary">No winning trades found.</Text>
+                        <Text className="trade-description-text">No winning trades found.</Text>
                       )}
                     </div>
                   </Col>
@@ -389,7 +350,7 @@ const DashboardMainContent = () => {
                           </Descriptions.Item>
                         </Descriptions>
                       ) : (
-                        <Text type="secondary">No losing trades found.</Text>
+                        <Text className="trade-description-text">No losing trades found.</Text>
                       )}
                     </div>
                   </Col>
@@ -397,77 +358,41 @@ const DashboardMainContent = () => {
               </Card>
             </Col>
           </Row>
-          <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
+          <Row gutter={[16, 16]} className="trade-options-row">
             <Col xs={12} sm={6} md={6}>
-              <Card
-                hoverable
-                className="card-hover"
-                style={{
-                  border: '1px solid #6C5CE720',
-                  background: '#6C5CE710',
-                }}
-              >
-                <RiseOutlined style={{ fontSize: 24, color: '#6C5CE7' }} />
+              <Card hoverable className="card-hover card-hover-1">
+                <RiseOutlined className="card-icon-1" style={{ fontSize: 24 }} />
                 <Title level={5} className="card-title">
                   Rise/Fall
                 </Title>
-                <Text type="secondary" className="card-text">
-                  Predict market direction
-                </Text>
+                <Text className="card-text">Predict market direction</Text>
               </Card>
             </Col>
             <Col xs={12} sm={6} md={6}>
-              <Card
-                hoverable
-                className="card-hover"
-                style={{
-                  border: '1px solid #00CEFF20',
-                  background: '#00CEFF10',
-                }}
-              >
-                <NumberOutlined style={{ fontSize: 24, color: '#00CEFF' }} />
+              <Card hoverable className="card-hover card-hover-2">
+                <NumberOutlined className="card-icon-2" style={{ fontSize: 24 }} />
                 <Title level={5} className="card-title">
                   Even/Odd
                 </Title>
-                <Text type="secondary" className="card-text">
-                  Bet on digit outcomes
-                </Text>
+                <Text className="card-text">Bet on digit outcomes</Text>
               </Card>
             </Col>
             <Col xs={12} sm={6} md={6}>
-              <Card
-                hoverable
-                className="card-hover"
-                style={{
-                  border: '1px solid #FF767520',
-                  background: '#FF767510',
-                }}
-              >
-                <ArrowUpOutlined style={{ fontSize: 24, color: '#FF7675' }} />
+              <Card hoverable className="card-hover card-hover-3">
+                <ArrowUpOutlined className="card-icon-3" style={{ fontSize: 24 }} />
                 <Title level={5} className="card-title">
                   Over/Under
                 </Title>
-                <Text type="secondary" className="card-text">
-                  Set your price barriers
-                </Text>
+                <Text className="card-text">Set your price barriers</Text>
               </Card>
             </Col>
             <Col xs={12} sm={6} md={6}>
-              <Card
-                hoverable
-                className="card-hover"
-                style={{
-                  border: '1px solid #3f860020',
-                  background: '#3f860010',
-                }}
-              >
-                <SwapOutlined style={{ fontSize: 24, color: '#3f8600' }} />
+              <Card hoverable className="card-hover card-hover-4">
+                <SwapOutlined className="card-icon-4" style={{ fontSize: 24 }} />
                 <Title level={5} className="card-title">
                   Matches/Differs
                 </Title>
-                <Text type="secondary" className="card-text">
-                  Predict the digit outcomes
-                </Text>
+                <Text className="card-text">Predict the digit outcomes</Text>
               </Card>
             </Col>
           </Row>
@@ -476,4 +401,5 @@ const DashboardMainContent = () => {
     </ConfigProvider>
   );
 };
+
 export default DashboardMainContent;

@@ -1,0 +1,108 @@
+.market-analysis-container {
+  padding: 0;
+  background: transparent;
+}
+  
+.market-analysis-card {
+  width: 100%;
+  margin: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.market-analysis-card .ant-card-head-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.market-analysis-card .ant-tabs-nav {
+  margin-bottom: 16px;
+}
+
+.market-analysis-card .ant-tabs-tab {
+  font-size: 14px;
+  color: var(--text-color); 
+  transition: color 0.3s;
+}
+.custom-analysis-tabs .ant-tabs-ink-bar {
+  background: #1677ff;
+}
+.market-analysis-card .ant-progress {
+  margin-top: 8px;
+}
+.ant-tabs-tab-active {
+  color: #1677ff !important;
+  font-weight: bold;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .market-analysis-container {
+    padding: 8px;
+  }
+
+  .market-analysis-card {
+    margin-bottom: 16px;
+  }
+
+  .market-analysis-card .ant-card-head {
+    padding: 0 16px;
+  }
+
+  .market-analysis-card .ant-card-body {
+    padding: 16px;
+  }
+
+  .market-analysis-card .ant-typography h4 {
+    font-size: 16px;
+  }
+
+  .market-analysis-card .ant-typography p {
+    font-size: 14px;
+  }
+
+  .market-analysis-card .ant-select {
+    width: 100%;
+  }
+}
+
+/* Tab customization for analysis section */
+.custom-analysis-tabs .ant-tabs-tab {
+  color: #ffffff; /* White for inactive tabs */
+  transition: color 0.3s;
+}
+
+.custom-analysis-tabs .ant-tabs-tab-active {
+  color: #1677ff !important; /* Blue for active tab */
+  font-weight: bold;
+}
+
+.custom-analysis-tabs .ant-tabs-ink-bar {
+  background: #1677ff;
+}
+
+/* Alert customization */
+.custom-alert-wrapper .ant-alert {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.custom-alert-wrapper .ant-alert-message {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.custom-alert-wrapper .ant-alert-description {
+  color: #ffffff;
+}
+
+.custom-alert-wrapper .ant-alert-icon {
+  color: inherit;
+}
+
+/* Optional: custom icon colors by type */
+.custom-alert-wrapper .ant-alert-success .ant-alert-icon { color: #52c41a; }
+.custom-alert-wrapper .ant-alert-error .ant-alert-icon { color: #f5222d; }
+.custom-alert-wrapper .ant-alert-warning .ant-alert-icon { color: #faad14; }
+.custom-alert-wrapper .ant-alert-info .ant-alert-icon { color: #1890ff; }

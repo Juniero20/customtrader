@@ -1,56 +1,71 @@
 /* General styles for the header */
 .header {
   position: fixed;
-  z-index: 1;
+  top: 0;
+  z-index: 10;
   width: 100%;
-  background: #fff;
+  background-color: var(--bg-color) !important;
+  color: var(--text-color); /* Ensure this is set correctly */
+  transition: background-color var(--transition-speed), color var(--transition-speed);
 }
-
 .header-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 10px 16px;
 }
-
 .logo {
   display: flex;
   align-items: center;
   margin: 0;
 }
-
-.logo-text {
-  color: #1890ff;
-  font-size: 18px;
-  font-weight: bold;
+.logo-img {
+  height: 80px;
+  width: auto;
 }
-
 .header-buttons {
   display: flex;
-  gap: 8px;
+  gap: 10px;
 }
-
 .header-button {
-  font-size: 14px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
 }
-
+/* Specific styles for buttons */
+.login-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+  border-color: var(--text-color);
+}
+.login-button:hover {
+  background-color: var(--secondary-variant);
+}
+.signup-button {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+}
+.signup-button:hover {
+  background-color: var(--primary-variant);
+}
 /* Responsive styles */
 @media (max-width: 768px) {
   .header-container {
-    display: flex;
-    justify-content: space-between;
+    padding: 8px 12px;
   }
-  
   .header-buttons {
-    margin-top: 8px;
-    text-align: center;
+    gap: 6px;
   }
-
-  .header-button {
-    display: inline-block; 
-    width: auto; 
-    text-align: center;
+}
+@media (max-width: 480px) {
+  .logo-img {
+    height: 50px;
+    padding: 0;
+    margin-left: 0;
   }
 }

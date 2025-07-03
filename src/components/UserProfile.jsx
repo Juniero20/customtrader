@@ -64,6 +64,9 @@ const UserProfile = () => {
   });
   const { colorPrimary, colorSuccess, colorWarning, colorError } = token;
 
+  // Account type color for real/demo
+  const accountTypeColor = activeAccountType === 'real' ? '#00C853' : '#D50000';
+
   const accountId = user?.loginid;
   const isLoading = loading || apiLoading;
 
@@ -179,14 +182,15 @@ const UserProfile = () => {
 
   // Merge user (from context) and userData (from API) for fallback
   const mergedUser = { ...user, ...userData };
+  const isFullyVerified = mergedUser?.email_verified && mergedUser?.phone_verified;
 
-  if (isLoading) {
-    return (
-      <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }}>
-        <Skeleton active paragraph={{ rows: 8 }} />
-      </div>
-    );
-  }
+if (isLoading) {
+  return (
+    <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto', backgroundColor: 'var(--bg-color)', height:'100%' }}>
+      <Skeleton active paragraph={{ rows: 8 }} />
+    </div>
+  );
+}
 
   if (error) {
     return (
@@ -210,7 +214,15 @@ const UserProfile = () => {
         content={notification.content}
         trigger={notification.trigger}
       />
-      <div style={{ padding: '24px', maxWidth: 1200, margin: '0 auto' }}>
+      <div 
+        style={{ 
+          paddingTop: '80px', 
+          paddingRight: '8px',
+          paddingLeft: '8px',
+          maxWidth: 1200, 
+          margin: '0 auto', 
+          backgroundColor: 'var(--bg-color)', 
+        }}>
         <Row gutter={[24, 24]}>
           <Col xs={24} md={8}>
             <Card
@@ -221,24 +233,35 @@ const UserProfile = () => {
             >
               <Space direction="vertical" align="center" style={{ width: '100%' }}>
                 <Badge
-                  count={mergedUser?.status?.includes('verified') ? 'Verified' : null}
-                  color={colorSuccess}
-                  offset={[-20, 90]}
-                  style={{ fontWeight: 600 }}
+                  count={
+                    isFullyVerified ? (
+                      <span
+                        style={{
+                          width: 12,
+                          height: 12,
+                          backgroundColor: colorSuccess,
+                          borderRadius: '50%',
+                          display: 'inline-block',
+                          boxShadow: '0 0 0 2px white',
+                        }}
+                      />
+                    ) : null
+                  }
+                  offset={[-8, 8]}
                 >
                   <Avatar
                     size={128}
                     icon={<UserOutlined />}
                     src={mergedUser?.profile_image}
-                    style={{ background: colorPrimary, color: 'white', fontSize: 48 }}
+                    style={{ background: accountTypeColor, color: 'white', fontSize: 48 }}
                   />
                 </Badge>
-                <Title level={4} style={{ marginTop: 16, marginBottom: 0 }}>
+                <Title level={4} style={{ marginTop: 16, marginBottom: 0,  color:'var(--text-color)'}}>
                   {mergedUser?.fullname || 'Deriv User'}
                 </Title>
                 <Tag
                   icon={<VerifiedOutlined />}
-                  color={colorPrimary}
+                  color={accountTypeColor}
                   style={{ marginTop: 8, textTransform: 'uppercase', fontWeight: 600 }}
                 >
                   {activeAccountType ? activeAccountType.charAt(0).toUpperCase() + activeAccountType.slice(1) : 'N/A'}
@@ -252,18 +275,18 @@ const UserProfile = () => {
                   style={{ marginTop: 16 }}
                 />
                 <Button
-                  type="primary"
-                  icon={<EditOutlined />}
+                  type="default"
+                  icon={<MailOutlined />}
                   style={{ marginTop: 24, width: '100%' }}
-                  onClick={() => showNotification('info', 'Profile editing is not yet implemented.')}
+                  onClick={() => showNotification('info', 'Please contact support to update your profile.')}
                 >
-                  Edit Profile
+                  Contact Support
                 </Button>
               </Space>
             </Card>
 
             <Card
-              title="Account Security"
+              title={<Text style={{ color: 'var(--text-color)' }}>Account Security</Text>}
               style={{
                 marginTop: 24,
                 borderRadius: 16,
@@ -274,11 +297,11 @@ const UserProfile = () => {
                 {renderDetailItem(
                   <SafetyOutlined />,
                   'Verification Status',
-                  mergedUser?.status?.join(', ') || 'Not verified',
-                  <Tag color={mergedUser?.status?.includes('verified') ? colorSuccess : colorWarning}>
-                    {mergedUser?.status?.includes('verified') ? 'Verified' : 'Pending'}
+                  isFullyVerified ? 'Verified' : 'Pending',
+                  <Tag color={isFullyVerified ? colorSuccess : colorWarning}>
+                    {isFullyVerified ? 'Verified' : 'Pending'}
                   </Tag>,
-                  mergedUser?.status?.includes('verified')
+                  isFullyVerified
                 )}
                 {renderDetailItem(
                   <LockOutlined />,
@@ -303,22 +326,70 @@ const UserProfile = () => {
                     Account Strength
                   </Text>
                   <Progress
-                    percent={mergedUser?.status?.includes('verified') ? 85 : 45}
-                    strokeColor={mergedUser?.status?.includes('verified') ? colorSuccess : colorWarning}
+                    percent={isFullyVerified ? 85 : 45}
+                    strokeColor={isFullyVerified ? colorSuccess : colorWarning}
                     trailColor="#f0f0f0"
                     showInfo={false}
                   />
                   <Text type="secondary" style={{ fontSize: 12 }}>
-                    {mergedUser?.status?.includes('verified') ? 'Strong' : 'Medium'} security level
+                    {isFullyVerified ? 'Strong' : 'Medium'} security level
                   </Text>
                 </div>
               </List>
+            </Card>
+
+            <Card
+              title={<Text style={{ color: 'var(--text-color)' }}>Financial Summary</Text>}
+              style={{
+                marginTop: 24,
+                borderRadius: 16,
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+              }}
+            >
+              <Row gutter={[24, 24]}>
+                <Col xs={24} sm={12}>
+                  <Statistic
+                    title={
+                      <Space>
+                        <DollarOutlined style={{ color: colorPrimary }} />
+                        <Text>Account Balance</Text>
+                      </Space>
+                    }
+                    value={balance}
+                    precision={2}
+                    valueStyle={{ fontSize: 28, fontWeight: 600, color: colorPrimary }}
+                  />
+                </Col>
+                <Col xs={24} sm={12}>
+                  <Statistic
+                    title={
+                      <Space>
+                        <TransactionOutlined style={{ color: colorPrimary }} />
+                        <Text>Daily Trading Limit</Text>
+                      </Space>
+                    }
+                    value={mergedUser?.daily_transfers?.max || 0}
+                    precision={2}
+                    valueStyle={{ fontSize: 28, fontWeight: 600, color: colorPrimary  }}
+                  />
+                </Col>
+              </Row>
+              <Divider style={{ margin: '16px 0' }} />
+              <Space>
+                <CalendarOutlined style={{ color: colorPrimary }} />
+                <Text type="secondary" style={{ color: 'var(--text-color)' }}>
+                  Last login:{' '}
+                  {mergedUser?.last_login
+                    ? new Date(mergedUser?.last_login).toLocaleString()
+                    : 'N/A'}
+                </Text>
+              </Space>
             </Card>
           </Col>
 
           <Col xs={24} md={16}>
             <Card
-              title="Personal Information"
+              title={<Text style={{ color: 'var(--text-color)' }}>Personal Information</Text>}
               style={{
                 borderRadius: 16,
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
@@ -352,56 +423,9 @@ const UserProfile = () => {
               </List>
             </Card>
 
-            <Card
-              title="Financial Summary"
-              style={{
-                marginTop: 24,
-                borderRadius: 16,
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-              }}
-            >
-              <Row gutter={[24, 24]}>
-                <Col xs={24} sm={12}>
-                  <Statistic
-                    title={
-                      <Space>
-                        <DollarOutlined style={{ color: colorPrimary }} />
-                        <Text>Account Balance</Text>
-                      </Space>
-                    }
-                    value={balance}
-                    precision={2}
-                    valueStyle={{ fontSize: 28, fontWeight: 600, color: colorPrimary }}
-                  />
-                </Col>
-                <Col xs={24} sm={12}>
-                  <Statistic
-                    title={
-                      <Space>
-                        <TransactionOutlined style={{ color: colorPrimary }} />
-                        <Text>Daily Trading Limit</Text>
-                      </Space>
-                    }
-                    value={mergedUser?.daily_transfers?.max || 0}
-                    precision={2}
-                    valueStyle={{ fontSize: 28, fontWeight: 600 }}
-                  />
-                </Col>
-              </Row>
-              <Divider style={{ margin: '16px 0' }} />
-              <Space>
-                <CalendarOutlined style={{ color: colorPrimary }} />
-                <Text type="secondary">
-                  Last login:{' '}
-                  {mergedUser?.last_login
-                    ? new Date(mergedUser?.last_login).toLocaleString()
-                    : 'N/A'}
-                </Text>
-              </Space>
-            </Card>
 
             <Card
-              title="Recent Activity"
+              title={<Text style={{ color: 'var(--text-color)' }}>Recent Activity</Text>}
               style={{
                 marginTop: 24,
                 borderRadius: 16,

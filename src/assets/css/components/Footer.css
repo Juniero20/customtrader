@@ -1,0 +1,39 @@
+/* Footer.css */
+.footer {
+  background-color: var(--bg-color); /* Match body and header */
+  color: var(--text-color);
+  text-align: center;
+  padding: 24px 16px; /* Standard padding for spacing */
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-text {
+  font-size: 16px;
+  color: var(--text-color);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .footer {
+    padding: 16px 12px;
+  }
+
+  .footer-text {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 12px 8px;
+  }
+
+  .footer-text {
+    font-size: 12px;
+  }
+}

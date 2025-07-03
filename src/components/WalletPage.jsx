@@ -39,7 +39,7 @@ const WalletPage = () => {
   const { token } = theme.useToken();
 
   // State management
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm] = useState('');
   const [dateRange, setDateRange] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState(['Date', 'Type', 'Amount', 'Transaction ID', 'Payout']);
   const [activeTab, setActiveTab] = useState('statement');
@@ -259,9 +259,13 @@ const WalletPage = () => {
         },
       }}
     >
-      <div
+      <div className='wallet-container'
         style={{
-          padding: '16px',
+          paddingTop: '80px',
+          paddingLeft:'8px',
+          paddingRight:'8px',
+          height:'100%',
+          backgroundColor: 'var(--bg-color)',
           maxWidth: 1400,
           margin: '0 auto',
           // Pass token values as CSS custom properties
@@ -289,6 +293,7 @@ const WalletPage = () => {
               <Statistic
                 title="Total Transactions"
                 value={summaryData.totalTransactions}
+                valueStyle={{ color: token.colorPrimary }}
                 prefix={<HistoryOutlined />}
                 loading={isLoading}
               />
@@ -320,35 +325,45 @@ const WalletPage = () => {
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
           }}
         >
-          <Row gutter={[16, 16]} align="middle">
-            <Col xs={24} sm={12} md={8}>
-              <Input
-                placeholder="Search transactions..."
-                prefix={<SearchOutlined />}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                allowClear
-                disabled={isLoading}
-              />
+          <Row gutter={[8, 8]}>
+            <Col>
+              <Button onClick={() => setDateRange([new Date(Date.now() - 30 * 60 * 1000), new Date()])}>
+                Last 30 min
+              </Button>
             </Col>
-            <Col xs={24} sm={12} md={8}>
-              <RangePicker
-                onChange={setDateRange}
-                style={{ width: '100%' }}
-                suffixIcon={<FilterOutlined />}
-                disabled={isLoading}
-              />
+            <Col>
+              <Button onClick={() => setDateRange([new Date(Date.now() - 60 * 60 * 1000), new Date()])}>
+                Last 1 hr
+              </Button>
+            </Col>
+            <Col>
+              <Button onClick={() => setDateRange([new Date(Date.now() - 6 * 60 * 60 * 1000), new Date()])}>
+                Last 6 hrs
+              </Button>
+            </Col>
+            <Col>
+              <Button onClick={() => setDateRange([new Date(Date.now() - 12 * 60 * 60 * 1000), new Date()])}>
+                Last 12 hrs
+              </Button>
+            </Col>
+            <Col>
+              <Button onClick={() => setDateRange([new Date(Date.now() - 24 * 60 * 60 * 1000), new Date()])}>
+                Last 24 hrs
+              </Button>
             </Col>
           </Row>
 
           <Divider orientation="left" style={{ margin: '12px 0' }}>
-            <Text type="secondary">Visible Columns</Text>
+            <Text type="secondary" style={{ color:'var(--text-color)'}}>Visible Columns</Text>
           </Divider>
-          <Checkbox.Group
-            options={['Date', 'Type', 'Amount', 'Transaction ID', 'Payout']}
-            value={visibleColumns}
-            onChange={setVisibleColumns}
-            disabled={isLoading}
-          />
+          <div className="custom-checkbox-group">
+            <Checkbox.Group
+              options={['Date', 'Type', 'Amount', 'Transaction ID', 'Payout']}
+              value={visibleColumns}
+              onChange={setVisibleColumns}
+              disabled={isLoading}
+            />
+          </div>
         </Card>
 
         {/* Main Content Tabs */}
@@ -358,7 +373,7 @@ const WalletPage = () => {
           style={{ marginTop: 16 }}
           tabBarExtraContent={
             <Space>
-              <Text type="secondary">Last updated: {new Date().toLocaleString()}</Text>
+              <Text type="secondary" style={{ color:'var(--text-color)'}}>Last updated: {new Date().toLocaleString()}</Text>
               <Button
                 size="small"
                 icon={<SyncOutlined spin={loading} />}
@@ -426,7 +441,7 @@ const WalletPage = () => {
               ) : (
                 <Empty
                   image={Empty.PRESENTED_IMAGE_SIMPLE}
-                  description={<Text type="secondary">No transactions found</Text>}
+                  description={<Text type="secondary" style={{ color:'var(--text-color)'}}>No transactions found</Text>}
                 />
               )}
             </Card>

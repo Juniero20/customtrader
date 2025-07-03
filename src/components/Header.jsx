@@ -1,76 +1,39 @@
-import React, { useState } from 'react';
-import { Layout, Button, Typography, Drawer } from 'antd';
+import { Layout, Button } from 'antd';
 import { Link } from 'react-router-dom';
-import { MenuOutlined } from '@ant-design/icons';
 import '../assets/css/components/Header.css';
+import logo from '../assets/images/logo.png';
 
 const { Header } = Layout;
-const { Text } = Typography;
 
 const AppHeader = () => {
-  const [drawerVisible, setDrawerVisible] = useState(false);
-
-  const toggleDrawer = () => {
-    setDrawerVisible(!drawerVisible);
+  const handleDerivAuth = async () => {
+    const appId = import.meta.env.VITE_DERIV_APP_ID;
+    const redirectUri = `${window.location.origin}/`;
+    window.location.href = `https://oauth.deriv.com/oauth2/authorize?app_id=${appId}&response_type=token&scope=read&redirect_uri=${encodeURIComponent(redirectUri)}`;
   };
 
-  // Optional: Enable this for menu toggle on mobile
-  const useMenuToggle = false; // Set to true to use drawer instead of buttons
+  const handleSignup = async () => {
+    window.location.href = 'https://hub.deriv.com/tradershub/signup?sidc=7E33F70B-5C69-47FB-85A3-B48BBFD63AA5&utm_campaign=dynamicworks&utm_medium=affiliate&utm_source=CU13613';
+  };
 
   return (
     <Header className="header">
       <div className="header-container">
         <div className="logo">
-          <Text className="logo-text">Mulla</Text>
+          <img src={logo} className="logo-img" alt="Logo" />
         </div>
-        {useMenuToggle && window.innerWidth <= 576 ? (
-          <>
-            <Button
-              type="text"
-              icon={<MenuOutlined />}
-              onClick={toggleDrawer}
-              className="menu-toggle"
-              style={{ fontSize: '20px', color: '#1890ff' }}
-              aria-label="Toggle menu"
-            />
-            <Drawer
-              placement="right"
-              closable={true}
-              onClose={toggleDrawer}
-              visible={drawerVisible}
-              width={200}
-              title="Menu"
-              styles={{
-                header: { padding: '16px', borderBottom: '1px solid #f0f0f0' },
-                body: { padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px' },
-              }}
-            >
-              <Link to="/login" onClick={toggleDrawer}>
-                <Button className="header-button" block>
-                  Login
-                </Button>
-              </Link>
-              <Link to="/signup" onClick={toggleDrawer}>
-                <Button className="header-button" type="primary" block>
-                  Sign Up
-                </Button>
-              </Link>
-            </Drawer>
-          </>
-        ) : (
-          <div className="header-buttons">
-            <Link to="/login">
-              <Button className="header-button" variant="outlined">
-                Login
-              </Button>
-            </Link>
-            <Link to="/signup">
-              <Button className="header-button" type="primary">
-                Sign Up
-              </Button>
-            </Link>
-          </div>
-        )}
+        <div className="header-buttons">
+          <Link to="#">
+            <Button className="header-button login-button" onClick={handleDerivAuth}>
+              Login
+            </Button>
+          </Link>
+          <Link to="#">
+            <Button className="header-button signup-button" onClick={handleSignup}>
+              Sign Up
+            </Button>
+          </Link>
+        </div>
       </div>
     </Header>
   );

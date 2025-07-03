@@ -1,0 +1,66 @@
+.even-odd-container {
+    padding: 16px;
+    background: #fff;
+  }
+  
+  .even-odd-card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  .refresh-button,
+  .fullscreen-button {
+    background: #1890ff;
+    border-color: #1890ff;
+  }
+  
+  .refresh-button:hover,
+  .fullscreen-button:hover {
+    background: #40a9ff;
+    border-color: #40a9ff;
+  }
+  
+  /* Full-screen mode */
+  .even-odd-container.full-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    padding: 0;
+    background: #fff;
+  }
+  
+  .even-odd-container.full-screen .even-odd-cardsoci {
+    height: 100%;
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  .even-odd-container.full-screen .even-odd-card .ant-card-body {
+    height: calc(100% - 64px); /* Adjust for card header height */
+  }
+  
+  .even-odd-container.full-screen iframe {
+    height: 100% !important;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 576px) {
+    .even-odd-container {
+      padding: 8px;
+    }
+  
+    .even-odd-card {
+      margin-bottom: 16px;
+    }
+  
+    .even-odd-card .ant-card-head {
+      padding: 0 16px;
+    }
+  
+    .even-odd-card .ant-card-body {
+      padding: 8px;
+    }
+  }

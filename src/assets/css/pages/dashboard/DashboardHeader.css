@@ -1,78 +1,172 @@
+/* DashboardHeader.css */
 .header {
-    background: #fff;
-    padding: 0 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--bg-color);
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+  top: 0;
+  transition: background-color var(--transition-speed);
+}
+
+.header-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-color);
+}
+
+.header-mobile {
+  padding: 0 12px;
+}
+
+.header-desktop {
+  padding: 0 24px;
+}
+
+.menu-toggle {
+  font-size: 20px;
+  color: var(--primary-color);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.menu-toggle:hover {
+  color: var(--primary-variant);
+}
+
+.logo-img {
+  height: 80px;
+  width: auto;
+}
+
+.balance-display {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.balance-mobile {
+  padding: 4px 10px;
+  border-radius: 16px;
+  margin-right: 8px;
+}
+
+.balance-icon {
+  color: var(--primary-color);
+  font-size: 16px;
+}
+
+.balance-text {
+  color: var(--text-color);
+  margin-left: 8px;
+  font-size: 14px;
+}
+
+.balance-text-strong {
+  font-weight: bold;
+}
+
+.user-menu {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  background-color: var(--primary-color); /* Default */
+  color: var(--text-color);
+  font-weight: bold;
+}
+
+.avatar-real {
+  background-color: var(--accent-green);
+}
+
+.avatar-demo {
+  background-color: var(--accent-red);
+}
+
+.user-name {
+  font-size: 16px;
+  color: var(--text-color);
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.user-account-type {
+  font-size: 12px;
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+/* Dropdown menu */
+.ant-dropdown-menu {
+  background: #1e1e2f !important;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  min-width: 150px !important;
+}
+
+.ant-dropdown-menu-item {
+  color: var(--text-color)!important;
+  transition: background-color var(--transition-speed);
+}
+
+.ant-dropdown-menu-item:hover {
+  background: var(  --neutral-light) !important;
+  color: var(--text-color);
+}
+
+.ant-dropdown-menu-item .anticon {
+  color: var(--primary-color);
+}
+
+.ant-dropdown-menu-item-disabled .anticon {
+  color: var(--disabled-color);
+}
+
+.ant-dropdown-menu-item-danger .anticon {
+  color: var(--accent-red);
+}
+
+.ant-dropdown-menu-item-divider {
+  background-color: var(--input-bg);
+}
+
+/* Responsive styles */
+@media (max-width: 576px) {
+  .header {
+    padding: 0 12px;
   }
-  
-  .header-mobile {
-    padding: 0 16px;
-  }
-  
-  .header-desktop .menu-toggle {
-    font-size: 20px;
-    color: #1890ff;
-  }
-  
-  .header-mobile .menu-toggle {
-    font-size: 20px;
-    color: #1890ff;
-  }
-  
-  .balance-button {
-    background: #1890ff;
-    border: none;
-    display: flex;
-    align-items: center;
-  }
-  
+
   .balance-text {
-    color: #fff;
-    margin-left: 8px;
+    font-size: 13px;
+    white-space: nowrap;
   }
-  
-  .user-menu {
-    cursor: pointer;
-  }
-  
-  .avatar {
-    background: #1890ff;
-  }
-  
-  .user-name {
-    font-size: 16px;
-    color: #333;
-  }
-  
+
+  .user-name,
   .user-account-type {
-    font-size: 12px;
+    display: none; /* Hide on mobile */
   }
-  
-  /* Hide sidebar on mobile */
-  @media (max-width: 576px) {
-    .ant-layout-sider {
-      display: none !important;
-    }
-  
-    .ant-layout-content {
-      margin-left: 0 !important;
-    }
-  }
-  
-  /* Drawer styles */
-  .ant-drawer-content {
-    background: #fff;
-  }
-  
-  .ant-drawer-header {
-    background: #f5f5f5;
-    border-bottom: 1px solid #e8e8e8;
-  }
-  
-  .ant-drawer-title {
-    font-size: 16px;
-    font-weight: 500;
-    color: #333;
-  }
+}
+/* Drawer styles */
+.ant-drawer-content {
+  background: var(--bg-color) !important;
+}
+.ant-drawer-header {
+  background: var(--bg-color);
+  border-bottom: 1px solid var(--bg-color) !important;
+}
+.ant-drawer-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-color) !important;
+}
+

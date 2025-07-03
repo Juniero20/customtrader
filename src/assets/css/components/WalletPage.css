@@ -1,4 +1,31 @@
 /* WalletPage.css */
+/* WalletPage.css */
+.wallet-container .ant-table-container {
+  background-color: var(--bg-color); 
+  height: 100%;
+  padding: 8px;
+}
+
+.wallet-container .ant-table-thead > tr > th {
+  background-color: var(--bg-color); 
+}
+
+.wallet-container .ant-table-tbody > tr > td {
+  background-color: var(--bg-color); /* Optional: table row background */
+}
+/* Change header text color */
+.wallet-container .ant-table-thead > tr > th {
+  color: var(--text-color); 
+}
+
+/* Change body cell text color */
+.wallet-container .ant-table-tbody > tr > td {
+  color: var(--text-color); 
+}
+.wallet-container .ant-statistic-title {
+  color: var(--text-color); /* Change to any color you want */
+}
+
 
 /* Mobile styles (below 768px) */
 @media (max-width: 768px) {
@@ -33,16 +60,63 @@
     }
   }
   
-  /* Sticky table header */
-  .ant-table-thead > tr > th {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    background: var(--color-fill-alter);
-  }
-  
-  /* Accessibility focus styles */
-  .ant-table-cell:focus {
-    outline: 2px solid var(--color-primary);
-    outline-offset: -1px;
-  }
+/* Sticky table header */
+.ant-table-thead > tr > th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--text-color);
+}
+
+/* Accessibility focus styles */
+.ant-table-cell:focus {
+  outline: 2px solid var(--bg-color);
+  outline-offset: -1px;
+}
+.wallet-container .ant-table-tbody > tr:hover > td {
+  background-color: rgba(22, 119, 255, 0.1);
+}
+
+/* Custom Checkbox Group Styles */
+.custom-checkbox-group .ant-checkbox-wrapper {
+  color: #ffffff;
+}
+
+.custom-checkbox-group .ant-checkbox-inner {
+  background-color: transparent;
+  border-color: #ffffff;
+}
+
+.custom-checkbox-group .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #1677ff;
+  border-color: #1677ff;
+}
+
+.custom-checkbox-group .ant-checkbox-input:focus + .ant-checkbox-inner {
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
+}
+
+
+/* Custom Table Enhancements */
+.wallet-container .ant-table-row-expand-icon {
+  color: #1677ff;
+  border-color: #1677ff;
+}
+
+.wallet-container .ant-table-filter-trigger {
+  color: #1677ff;
+}
+
+.wallet-container .ant-pagination-item,
+.wallet-container .ant-pagination-prev,
+.wallet-container .ant-pagination-next {
+  color: #1677ff;
+  border-color: #1677ff;
+}
+
+.wallet-container .ant-pagination-item-active {
+  background-color: #1677ff;
+  border-color: #1677ff;
+}
+
+

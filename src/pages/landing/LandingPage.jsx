@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import AppHeader from '../../components/Header';
 import MainSection from './MainSection';
 import AppFooter from '../../components/Footer';
-import { parseDerivAuthTokens } from '../../services/parseDerivAuth'; 
+import { parseDerivAuthTokens } from '../../services/parseDerivAuth';
+import '../../assets/css/pages/landing/LandingPage.css';
 
 const { Content } = Layout;
 
@@ -30,10 +31,10 @@ const LandingPage = () => {
   }, [navigate, messageApi]);
 
   return (
-    <Layout className="layout" style={{ minHeight: '100vh' }}>
+    <Layout className="landing-page-layout">
       {contextHolder} {/* Add contextHolder to render the message */}
       <AppHeader />
-      <Content style={{ marginTop: 64 }}>
+      <Content className="landing-page-content">
         <MainSection />
       </Content>
       <AppFooter />

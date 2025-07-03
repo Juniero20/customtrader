@@ -1,0 +1,73 @@
+/* src/assets/css/components/ChartPage.css */
+.chart-page-container {
+  background-color: var(--bg-color) !important;
+  min-height: 75vh; /* ensures full viewport height */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.chart-page-error {
+  background-color: var(--card-bg, rgba(255, 255, 255, 0.05));
+  border-color: var(--accent-red, #FF7675) !important;
+  color: var(--text-color, whitesmoke);
+  margin-bottom: 16px;
+}
+
+.chart-page-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chart-page-loading .ant-spin-text {
+  color: var(--text-color, whitesmoke);
+}
+
+.chart-page-loading .ant-spin-dot-item {
+  background-color: var(--primary-color, #6C5CE7);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .chart-page-container {
+    padding: 16px;
+  }
+
+  .chart-page-card {
+    padding: 12px;
+  }
+
+  .chart-page-title {
+    font-size: 16px;
+  }
+
+  .chart-page-select {
+    width: 160px;
+  }
+
+  .chart-page-error {
+    margin-bottom: 12px;
+  }
+
+  .chart-page-loading {
+    height: 150px;
+  }
+}
+
+@media (max-width: 576px) {
+  .chart-page-container {
+    padding-top: 8px;
+  }
+
+  .chart-page-select {
+    width: 100%;
+  }
+
+  .chart-page-title {
+    font-size: 14px;
+  }
+}

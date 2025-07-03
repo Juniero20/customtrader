@@ -1,0 +1,85 @@
+.risk-disclosure-container {
+  padding: 16px;
+  background: var(--bg-color);
+  padding-top: 80px;
+}
+
+.risk-disclosure-card {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto; /* Center the card */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  color: var(--text-color);
+}
+
+.continue-button,
+.happy-trading-button {
+  background: #1890ff;
+  border-color: #1890ff;
+}
+
+.continue-button:hover,
+.happy-trading-button:hover {
+  background: #40a9ff;
+  border-color: #40a9ff;
+}
+
+.acknowledgment-checkbox {
+  margin-bottom: 16px;
+}
+
+.disclaimer {
+  font-size: 12px;
+  text-align: center;
+}
+
+.risk-disclosure-card .ant-card-head-title {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+  color: var(--text-color);
+}
+
+.risk-disclosure-modal .ant-modal-content {
+  border-radius: 8px;
+}
+
+.risk-disclosure-modal .ant-modal-header {
+  border-radius: 8px 8px 0 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .risk-disclosure-container {
+    padding: 8px;
+  }
+
+  .risk-disclosure-card {
+    margin-bottom: 16px;
+  }
+
+  .risk-disclosure-card .ant-card-head {
+    padding: 0 16px;
+  }
+
+  .risk-disclosure-card .ant-card-body {
+    padding: 16px;
+  }
+
+  .risk-disclosure-card .ant-typography h4 {
+    font-size: 16px;
+  }
+
+  .risk-disclosure-card .ant-typography p {
+    font-size: 14px;
+  }
+
+  .risk-disclosure-modal .ant-modal {
+    width: 90% !important; /* Adjust modal width for mobile */
+  }
+
+  .risk-disclosure-modal .ant-modal-body {
+    padding: 16px;
+  }
+}

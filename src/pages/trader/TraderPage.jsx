@@ -1,108 +1,146 @@
-import { 
-    Button, 
-    Divider, 
-    Layout, 
-    Typography, 
-    Row, 
-    Col 
+import {
+  Button,
+  Divider,
+  Layout,
+  Typography,
+  Row,
+  Col,
 } from 'antd';
 import {
-    LineChartOutlined,
-    RiseOutlined,
-    NumberOutlined,
-    ArrowUpOutlined
+  LineChartOutlined,
+  RiseOutlined,
+  NumberOutlined,
+  ArrowUpOutlined,
 } from '@ant-design/icons';
 import { useState, useEffect, useMemo } from 'react';
 import OverUnderTrader from './over_under/OverUnderContract';
 import EvenOddTrader from './even_odd/EvenOddContract';
 import RiseFallTrader from './rise_fall/RiseFallContract';
-import VolatilityComparisonChart from '../../components/TickDataGraph';
 import MatchesDiffersTrader from './matches_differs/MatchesDifferContract';
+import RiseFallMarketAnalysis from '../analysis/riseFall/RiseFallMarketAnalysis';
+import OverUnderMarketAnalysis from '../analysis/overUnder/OverUnderMarketAnalysis';
+import MatchesDiffersMarketAnalysis from '../analysis/matchesDiffers/MatchesDiffersMarketAnalysis';
+import EvenOddMarketAnalysis from '../analysis/evenOdd/EvenOddMarketAnalysis';
+import RecentTrades from '../../components/RecentTrades';
+import ChartPage from './ChartPage';
+import '../../assets/css/pages/trader/TraderPage.css'; 
 
 const { Title, Text } = Typography;
 
 const TraderPage = () => {
-    const [selectedFeature, setSelectedFeature] = useState(null);
+  const [selectedFeature, setSelectedFeature] = useState(null);
 
-    const features = useMemo(() => [
-        {
-          icon: <RiseOutlined />,
-          title: 'Rise/Fall',
-          component: <RiseFallTrader />
-        },
-        {
-          icon: <NumberOutlined />,
-          title: 'Even/Odd',
-          component: <EvenOddTrader />
-        },
-        {
-          icon: <ArrowUpOutlined />,
-          title: 'Over/Under',
-          component: <OverUnderTrader />
-        },
-        {
-          icon: <LineChartOutlined />,
-          title: 'Matches/Differs',
-          component: <MatchesDiffersTrader />
-        }
-    ], []);
+  const features = useMemo(
+    () => [
+      {
+        icon: <RiseOutlined />,
+        title: 'Rise/Fall',
+        contractComponent: <RiseFallTrader />,
+        analysisComponent: <RiseFallMarketAnalysis />,
+      },
+      {
+        icon: <NumberOutlined />,
+        title: 'Even/Odd',
+        contractComponent: <EvenOddTrader />,
+        analysisComponent: <EvenOddMarketAnalysis />,
+      },
+      {
+        icon: <ArrowUpOutlined />,
+        title: 'Over/Under',
+        contractComponent: <OverUnderTrader />,
+        analysisComponent: <OverUnderMarketAnalysis />,
+      },
+      {
+        icon: <LineChartOutlined />,
+        title: 'Matches/Differs',
+        contractComponent: <MatchesDiffersTrader />,
+        analysisComponent: <MatchesDiffersMarketAnalysis />,
+      },
+    ],
+    []
+  );
 
-    // Set default feature to "Rise/Fall" on initial render
-    useEffect(() => {
-        setSelectedFeature(features[0]); 
-    }, [features]);
+  // Set default feature to "Rise/Fall" on initial render
+  useEffect(() => {
+    setSelectedFeature(features[0]);
+  }, [features]);
 
-    return (
-        <Layout style={{ padding: '24px' }}>
-            <Layout.Content>
-                {/* Chart at the top */}
-                <VolatilityComparisonChart />
+  return (
+    <Layout className="trader-page-container">
+      <Layout.Content className="trader-page-content">
+        {/* Chart at the top */}
+        <ChartPage />
 
-                {/* Trading Features */}
-                <Divider orientation="center">
-                    <Title level={2}>Our Trading Options</Title>
-                </Divider>
-                <Row gutter={[16, 16]} justify="center" style={{ marginBottom: 60 }}>
-                    {features.map((feature, index) => (
-                        <Col key={index}>
-                            <Button
-                                type={selectedFeature === feature ? 'primary' : 'default'}
-                                icon={feature.icon}
-                                size="large"
-                                onClick={() => setSelectedFeature(feature)}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    borderRadius: 8,
-                                    padding: '10px 16px',
-                                    minWidth: 150,
-                                    textAlign: 'center',
-                                }}
-                            >
-                                <div>
-                                    <Title level={5} style={{ margin: 0 }}>{feature.title}</Title>
-                                    <Text type="secondary">{feature.description}</Text>
-                                </div>
-                            </Button>
-                        </Col>
-                    ))}
-                </Row>
-
-                {/* Trading Contract Section */}
-                <Divider orientation="center">
-                    <Title level={2}>Trading Contract</Title>  
-                </Divider>
-                <div style={{ marginTop: 24 }}>
-                    {selectedFeature ? (
-                        selectedFeature.component || <Text>No contract available for this option.</Text>
-                    ) : (
-                        <Text>Select a trading option to view its contract.</Text>
-                    )}
+        {/* Trading Features */}
+        <Divider orientation="center" className="trader-page-divider">
+          <Title level={2} className="trader-page-title">
+            Our Trading Options
+          </Title>
+        </Divider>
+        <Row
+          gutter={[16, 16]}
+          justify="center"
+        >
+          {features.map((feature, index) => (
+            <Col key={index}>
+              <Button
+                type={selectedFeature === feature ? 'primary' : 'default'}
+                icon={feature.icon}
+                size="large"
+                onClick={() => setSelectedFeature(feature)}
+                className="trader-page-feature-button"
+              >
+                <div>
+                  <Title level={5} className="trader-page-title">
+                    {feature.title}
+                  </Title>
+                  <Text type="secondary" className="trader-page-text">
+                    {feature.description}
+                  </Text>
                 </div>
-            </Layout.Content>
-        </Layout>
-    );
+              </Button>
+            </Col>
+          ))}
+        </Row>
+
+        {/* Trading Contract Section */}
+        <Divider orientation="center" className="trader-page-divider">
+          <Title level={2} className="trader-page-title">
+            Trading Contract
+          </Title>
+        </Divider>
+        <Row gutter={[16, 16]} style={{ marginTop: 10 }}>
+          {selectedFeature ? (
+            <>
+              <Col xs={24} md={12}>
+                <div className="trader-page-contract-section">
+                  {selectedFeature.contractComponent}
+                </div>
+              </Col>
+              <Col xs={24} md={12}>
+                <div className="trader-page-analysis-section">
+                  {selectedFeature.analysisComponent}
+                </div>
+              </Col>
+            </>
+          ) : (
+            <Col span={24}>
+              <Text className="trader-page-text">
+                Select a trading option to view its contract and analysis.
+              </Text>
+            </Col>
+          )}
+        </Row>
+
+        <Divider orientation="center" className="trader-page-divider">
+          <Title level={2} className="trader-page-title">
+            Recent Trades
+          </Title>
+        </Divider>
+        <RecentTrades />
+      </Layout.Content>
+    </Layout>
+  );
 };
 
 export default TraderPage;

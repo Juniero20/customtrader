@@ -1,0 +1,15 @@
+/* LandingPage.css */
+.landing-page-layout {
+  background-color: transparent;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: var(--text-color);
+}
+
+.landing-page-content {
+  background-color: transparent;
+  margin-top: 64px;
+  flex: 1;
+}
+

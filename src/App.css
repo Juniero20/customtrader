@@ -1,0 +1,368 @@
+:root {
+  /* Primary Branding */
+  --primary-color: #6C5CE7;         /* Vibrant purple */
+  --primary-variant: #512DA8;       /* Darker variant */
+  --secondary-color: #00CEFF;       /* Cyan blue */
+  --secondary-variant: #009ACF;
+
+  /* Accent Colors */
+  --accent-green: #00C853;          /* Profit - green */
+  --accent-red: #D50000;            /* Loss - red */
+  --accent-yellow: #FFEA00;         /* Warnings or alerts */
+
+  /* Neutrals */
+  --neutral-color: #018786;
+  --neutral-light: #2c3e50;
+  --neutral-dark: #1c2833;
+
+  /* Backgrounds */
+  --bg-color: #141c27;              /* Dark trading background */
+  --bg-gradient: linear-gradient(to right, #0d1117, #1c1f26);
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --input-bg: rgba(255, 255, 255, 0.08);
+
+  /* Text */
+  --text-color: #e5e5e5;            /* Light gray-white */
+  --text-muted: #888888;
+  --text-highlight: #ffffff;
+
+  /* Borders and Shadows */
+  --border-color: rgba(255, 255, 255, 0.1);
+  --shadow-color: rgba(0, 0, 0, 0.3);
+
+  /* Transitions */
+  --transition-speed: 0.3s;
+
+  /* New variables for DashboardHeader */
+  --accent-green: #52c41a; /* Real account */
+  --accent-red: #FF7675;   /* Demo account and logout (standardized from #ff4d4f) */
+  --disabled-color: #cccccc; /* Disabled menu items */
+
+  /* Chart colors */
+  --chart-color-v10: rgba(24, 144, 255, 1);  /* Volatility 10 */
+  --chart-color-v25: rgba(255, 77, 79, 1);   /* Volatility 25 */
+  --chart-color-v50: rgba(82, 196, 26, 1);   /* Volatility 50 */
+  --chart-color-v75: rgba(250, 173, 20, 1);  /* Volatility 75 */
+  --chart-color-v100: rgba(114, 46, 209, 1); /* Volatility 100 */
+  --chart-latest-point: rgba(255, 77, 79, 1);
+  --chart-point-border: rgba(255, 255, 255, 1);
+  --chart-annotation-line: rgba(255, 77, 79, 0.5);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+  
+body {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color);
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+  
+/* Ant Design overrides */
+.ant-card {
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.1) 0%, rgba(0, 206, 255, 0.1) 100%);
+  border: 1px solid rgba(108, 92, 231, 0.2);
+}
+
+.ant-select-selector {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color);
+  border-color: var(--input-bg) !important;
+}
+
+.ant-select-selection-item,
+.ant-select-selection-placeholder {
+  color: var(--text-color);
+}
+
+.ant-btn-primary {
+  background: var(--secondary-color);
+  border: none;
+}
+
+.ant-btn-primary:hover {
+  background-color: var(--secondary-variant) !important;
+}
+
+.ant-btn-default {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+}
+
+.ant-btn-default:hover {
+  background-color: var(--hover-accent)!important;
+  color: var(--text-color);
+}
+.ant-select-dropdown {
+  background-color: var(--card-bg, rgba(255, 255, 255, 0.05));
+  color: var(--text-color, whitesmoke);
+}
+.ant-select-selector {
+  background-color: var(--input-bg, rgba(255, 255, 255, 0.1)) !important;
+  color: var(--text-color, whitesmoke);
+  border-color: var(--input-bg, rgba(255, 255, 255, 0.1)) !important;
+}
+
+.ant-select-item-option {
+  color: var(--text-color, whitesmoke) !important;
+}
+
+.ant-select-item-option-selected {
+  background-color: var(--primary-variant, #3700B3) !important;
+}
+
+.ant-typography {
+  color: var(--text-color, whitesmoke);
+}
+
+
+
+.ant-btn-primary {
+  background-color: var(--primary-variant, #3700B3);
+  border: none;
+}
+
+.ant-btn-primary:hover {
+  background-color: var(--hover-accent, #03DAC6);
+}
+
+.ant-btn-default {
+  background-color: var(--input-bg, rgba(255, 255, 255, 0.1));
+  color: var(--text-color, whitesmoke);
+  border: none;
+}
+
+.ant-btn-default:hover {
+  background-color: var(--hover-accent, #03DAC6);
+  color: var(--text-color, whitesmoke);
+}
+
+.ant-typography {
+  color: var(--text-color, whitesmoke);
+}
+
+.ant-typography-secondary {
+  opacity: 0.7;
+}
+.ant-txt-primary {
+  color: var(--text-color);
+}
+
+/* Select */
+.ant-select-selector {
+  background-color: var(--input-bg, rgba(255, 255, 255, 0.1)) !important;
+  color: var(--text-color, whitesmoke) !important;
+  border-color: var(--input-bg, rgba(255, 255, 255, 0.1)) !important;
+  border-radius: 8px;
+}
+
+.ant-select-selection-item,
+.ant-select-selection-placeholder {
+  color: var(--text-color, whitesmoke);
+}
+
+.ant-select-dropdown {
+  background-color: var(--card-bg, rgba(255, 255, 255, 0.05));
+  color: var(--text-color, whitesmoke);
+}
+
+.ant-select-item-option {
+  color: var(--text-color, whitesmoke);
+}
+
+.ant-select-item-option-selected {
+  background-color: var(--primary-variant, #3700B3) !important;
+}
+
+
+.ant-radio-button-wrapper:hover {
+  background-color: var(--primary-variant, #3700B3);
+  color: var(--text-color, whitesmoke);
+}
+
+.ant-radio-button-wrapper-disabled {
+  background-color: var(--disabled-color, #cccccc);
+  color: var(--text-color, whitesmoke);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* InputNumber */
+.ant-input-number {
+  background-color: var(--input-bg, rgba(255, 255, 255, 0.1));
+  color: var(--text-color, whitesmoke);
+  border-color: var(--input-bg, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+}
+
+.ant-input-number-input {
+  color: var(--text-color, whitesmoke);
+}
+
+.ant-input-number-addon-after,
+.ant-input-number-prefix {
+  color: var(--text-color, whitesmoke);
+}
+
+.ant-input-number-disabled {
+  background-color: var(--disabled-color, #cccccc);
+  opacity: 0.5;
+}
+
+/* Buttons */
+.ant-btn-primary {
+  background-color: var(--primary-color, #6C5CE7);
+  border-color: var(--primary-color, #6C5CE7);
+  border-radius: 8px;
+  height: 48px;
+  transition: background-color var(--transition-speed, 0.3s);
+}
+
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
+  background-color: var(--primary-variant, #3700B3);
+  border-color: var(--primary-variant, #3700B3);
+}
+/* Spin */
+.ant-spin {
+  color: var(--primary-color, #6C5CE7);
+}
+
+.ant-spin-dot-item {
+  background-color: var(--primary-color, #6C5CE7);
+}
+
+
+
+.ant-select-selection-item,
+.ant-select-selection-placeholder {
+  color: var(--text-color, whitesmoke);
+}
+
+.ant-select-dropdown {
+  background-color: var(--neutral-light);
+  color: var(--text-color, whitesmoke);
+}
+
+.ant-select-item-option {
+  color: var(--text-color, whitesmoke);
+}
+
+.ant-select-item-option-selected {
+  background-color: var(--primary-variant, #3700B3) !important;
+}
+
+/* Radio Group */
+.ant-radio-group {
+  width: 100%;
+}
+
+.ant-radio-button-wrapper {
+  background-color: var(--input-bg, rgba(255, 255, 255, 0.1));
+  color: var(--text-color, whitesmoke);
+  border-color: var(--input-bg, rgba(255, 255, 255, 0.1));
+  transition: background-color var(--transition-speed, 0.3s);
+}
+
+.ant-radio-button-wrapper-checked {
+  background-color: var(--primary-color, #6C5CE7) !important;
+  color: var(--text-color, whitesmoke) !important;
+  border-color: var(--primary-color, #6C5CE7) !important;
+}
+
+.ant-radio-button-wrapper:hover {
+  background-color: var(--primary-variant, #3700B3);
+  color: var(--text-color, whitesmoke);
+}
+
+.ant-radio-button-wrapper-disabled {
+  background-color: var(--disabled-color, #cccccc);
+  color: var(--text-color, whitesmoke);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* InputNumber */
+.ant-input-number {
+  background-color: var(--input-bg, rgba(255, 255, 255, 0.1));
+  color: var(--text-color, whitesmoke);
+  border-color: var(--input-bg, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+}
+
+.ant-input-number-input {
+  color: var(--text-color, whitesmoke);
+}
+
+.ant-input-number-addon-after,
+.ant-input-number-prefix {
+  color: var(--text-color, whitesmoke);
+}
+
+.ant-input-number-disabled {
+  background-color: var(--disabled-color, #cccccc);
+  opacity: 0.5;
+}
+
+/* Buttons */
+.ant-btn-primary {
+  background-color: var(--primary-color, #6C5CE7);
+  border-color: var(--primary-color, #6C5CE7);
+  border-radius: 8px;
+  height: 48px;
+  transition: background-color var(--transition-speed, 0.3s);
+}
+
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
+  background-color: var(--primary-variant, #3700B3);
+  border-color: var(--primary-variant, #3700B3);
+}
+
+.ant-btn-primary:disabled {
+  background-color: var(--disabled-color, #cccccc);
+  border-color: var(--disabled-color, #cccccc);
+  color: var(--text-color, whitesmoke);
+  opacity: 0.5;
+}
+
+/* Statistic */
+.ant-statistic-title {
+  color: var(--text-color, whitesmoke);
+  opacity: 0.7;
+}
+
+.ant-statistic-content {
+  color: var(--text-color, whitesmoke);
+}
+
+.ant-statistic-content-value {
+  font-size: 18px;
+}
+
+/* Alert */
+.ant-alert {
+  background-color: var(--input-bg, rgba(255, 255, 255, 0.1));
+  border-color: var(--input-bg, rgba(255, 255, 255, 0.1));
+  color: var(--text-color, whitesmoke);
+  border-radius: 8px;
+}
+
+.ant-alert-message,
+.ant-alert-description {
+  color: var(--text-color, whitesmoke);
+}
+
+/* Spin */
+.ant-spin {
+  color: var(--primary-color, #6C5CE7);
+}
+
+.ant-spin-dot-item {
+  background-color: var(--primary-color, #6C5CE7);
+}
