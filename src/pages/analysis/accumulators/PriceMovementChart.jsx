@@ -23,7 +23,7 @@ const PriceMovementChart = ({ movements }) => {
     }
   }
 
-  const recentDurations = resetDurations.slice(-10);
+  const recentDurations = resetDurations.slice(-20);
 
   return (
     <Card size="small" title={<Text style={{ color: 'var(--text-color)' }}>Ticks Before Reset </Text>}>
