@@ -8,7 +8,6 @@ import WalletPage from './components/WalletPage';
 import UserProfile from './components/UserProfile';
 import SettingsPage from './components/SettingPage';
 import NotFoundPage from './pages/NotFoundPage';
-import AccumulatorPage from './pages/accumulator/accumulatorPage';
 import { UserProvider } from './context/AuthContext';
 import { ContractsProvider } from './context/ContractsContext';
 import OverUnderAnalysis from './pages/analysis/OverUnderAnalysis';
@@ -36,7 +35,6 @@ function AppRoutes() {
           <Route index element={<MainSection />} />
           <Route path="home" element={<MainSection />} />
           <Route path="trading" element={<TraderPage />} />
-          <Route path="accumulator" element={<AccumulatorPage />} />
           <Route path="wallet" element={<WalletPage />} />
           <Route path="account" element={<UserProfile />} />
           <Route path="settings" element={<SettingsPage />} />

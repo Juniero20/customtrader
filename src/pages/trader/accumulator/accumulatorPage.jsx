@@ -10,10 +10,10 @@ import {
   ThunderboltOutlined,
 } from "@ant-design/icons";
 import "../../assets/css/pages/trader/TraderPage.css"; 
-import VolatilityComparisonChart from "../../components/TickDataGraph"; 
+import VolatilityComparisonChart from "../../../components/TickDataGraph"; 
 import AccumulatorContract from "./accumulatorContract";
-import RecentTrades from '../../components/RecentTrades';
-import AccumulatorMarketAnalysis from '../analysis/accumulators/AccumulatorMarketAnalysis';
+import RecentTrades from '../../../components/RecentTrades';
+import AccumulatorMarketAnalysis from '../../analysis/accumulators/AccumulatorMarketAnalysis';
 
 const { Title, Text } = Typography;
 

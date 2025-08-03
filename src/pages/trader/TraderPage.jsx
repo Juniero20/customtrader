@@ -16,11 +16,13 @@ import { useState, useEffect, useMemo } from 'react';
 import OverUnderTrader from './over_under/OverUnderContract';
 import EvenOddTrader from './even_odd/EvenOddContract';
 import RiseFallTrader from './rise_fall/RiseFallContract';
+import AccumulatorContract from './accumulator/accumulatorContract';
 import MatchesDiffersTrader from './matches_differs/MatchesDifferContract';
 import RiseFallMarketAnalysis from '../analysis/riseFall/RiseFallMarketAnalysis';
 import OverUnderMarketAnalysis from '../analysis/overUnder/OverUnderMarketAnalysis';
 import MatchesDiffersMarketAnalysis from '../analysis/matchesDiffers/MatchesDiffersMarketAnalysis';
 import EvenOddMarketAnalysis from '../analysis/evenOdd/EvenOddMarketAnalysis';
+import AccumulatorAnalysis from '../analysis/accumulators/AccumulatorMarketAnalysis';
 import RecentTrades from '../../components/RecentTrades';
 import ChartPage from './ChartPage';
 import '../../assets/css/pages/trader/TraderPage.css'; 
@@ -55,6 +57,12 @@ const TraderPage = () => {
         title: 'Matches/Differs',
         contractComponent: <MatchesDiffersTrader />,
         analysisComponent: <MatchesDiffersMarketAnalysis />,
+      },
+      {
+        icon: <LineChartOutlined />,
+        title: 'Accumulators',
+        contractComponent: <AccumulatorContract/>, 
+        analysisComponent: <AccumulatorAnalysis/>,
       },
     ],
     []

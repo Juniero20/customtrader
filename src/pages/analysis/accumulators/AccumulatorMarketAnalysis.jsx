@@ -2,46 +2,44 @@ import React, { useState, useEffect, useMemo } from 'react';
 import {
   Card,
   Select,
-  Tabs,
   Spin,
-  Progress,
   Typography,
-  Collapse,
-  theme,
   Space,
   Row,
   Col,
   Statistic,
-  Tooltip,
+  theme,
   Alert,
+  Collapse,
+  Tooltip,
+  Tabs,
   Badge,
-  Switch,
+  Progress
 } from 'antd';
 import {
-  LineChartOutlined,
-  QuestionCircleOutlined,
-  RiseOutlined,
-  WarningOutlined,
+  ThunderboltOutlined,
   InfoCircleOutlined,
-  BellOutlined,
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+  WarningOutlined,
 } from '@ant-design/icons';
-import { Line } from '@ant-design/charts';
 import { publicWebSocket } from '../../../services/public_websocket_client';
+import PriceMovementChart from './PriceMovementChart';
+import { useUser } from '../../../context/AuthContext';
 import {
+  analyzePriceChange,
+  analyzeResetCount,
+  analyzeTicksBeforeReset,
   analyzeTickMomentum,
-  analyzeRangeStability,
   analyzeVolatilitySpike,
   analyzeRisk,
-  analyzeTickCount,
   combineSignals,
 } from './accumulatorAnalysis';
-import { useUser } from '../../../context/AuthContext';
-import '../../../assets/css/pages/analysis/MarketAnalysis.css';
 
 const { Option } = Select;
-const { TabPane } = Tabs;
 const { Text, Title } = Typography;
 const { Panel } = Collapse;
+const { TabPane } = Tabs;
 
 const volatilityOptions = [
   { value: 'R_10', label: 'Volatility 10 Index' },
@@ -56,75 +54,36 @@ const volatilityOptions = [
   { value: '1HZ100V', label: 'Volatility 100 (1s) Index' },
 ];
 
-const barrierConfig = {
-  'R_10': { '0.01': 0.3872, '0.02': 0.3619, '0.03': 0.3394, '0.04': 0.3229, '0.05': 0.3074 },
-  '1HZ10V': { '0.01': 0.389, '0.02': 0.364, '0.03': 0.341, '0.04': 0.325, '0.05': 0.309 },
-  'R_25': { '0.01': 0.418, '0.02': 0.3867, '0.03': 0.3627, '0.04': 0.3451, '0.05': 0.3284 },
-  '1HZ25V': { '0.01': 72.209, '0.02': 67.472, '0.03': 63.264, '0.04': 60.196, '0.05': 57.305 },
-  'R_50': { '0.01': 0.04311, '0.02': 0.04030, '0.03': 0.03784, '0.04': 0.03601, '0.05': 0.03429 },
-  '1HZ50V': { '0.01': 51.488, '0.02': 48.143, '0.03': 45.149, '0.04': 42.923, '0.05': 40.911 },
-  'R_75': { '0.01': 45.9254, '0.02': 42.94317, '0.03': 40.32410, '0.04': 38.34462, '0.05': 36.49038 },
-  '1HZ75V': { '0.01': 1.583, '0.02': 1.480, '0.03': 1.389, '0.04': 1.322, '0.05': 1.259 },
-  'R_100': { '0.01': 0.733, '0.02': 0.686, '0.03': 0.642, '0.04': 0.612, '0.05': 0.583 },
-  '1HZ100V': { '0.01': 0.203, '0.02': 0.190, '0.03': 0.178, '0.04': 0.169, '0.05': 0.161 },
+const growthRates = [
+  { value: 1, label: '1%' },
+  { value: 2, label: '2%' },
+  { value: 3, label: '3%' },
+  { value: 4, label: '4%' },
+  { value: 5, label: '5%' },
+];
+
+// Barrier lookup table (in points)
+const barrierLookup = {
+  'R_10': { 1: 0.3829, 2: 0.3579, 3: 0.3356, 4: 0.3193, 5: 0.3039 },
+  '1HZ10V': { 1: 0.377, 2: 0.352, 3: 0.331, 4: 0.315, 5: 0.299 },
+  'R_25': { 1: 0.4420, 2: 0.4123, 3: 0.3875, 4: 0.3688, 5: 0.3509 },
+  '1HZ25V': { 1: 69.493, 2: 64.924, 3: 60.876, 4: 57.925, 5: 55.121 },
+  'R_50': { 1: 0.03975, 2: 0.03715, 3: 0.03486, 4: 0.03315, 5: 0.03156 },
+  '1HZ50V': { 1: 44.502, 2: 41.612, 3: 39.014, 4: 37.145, 5: 35.353 },
+  'R_75': { 1: 40.89002, 2: 38.1887, 3: 35.7975, 4: 34.03113, 5: 32.37661 },
+  '1HZ75V': { 1: 1.390, 2: 1.301, 3: 1.220, 4: 1.160, 5: 1.105 },
+  'R_100': { 1: 0.641, 2: 0.598, 3: 0.561, 4: 0.533, 5: 0.508 },
+  '1HZ100V': { 1: 0.321, 2: 0.300, 3: 0.282, 4: 0.268, 5: 0.256 },
 };
 
-// TickCountChart: Visualizes tick count and reset points
-const TickCountChart = ({ ticks, tickCount, resetTimes, upperBarrier, lowerBarrier }) => {
-  const data = ticks.map((tick, index) => ({
-    tick: index + 1,
-    price: parseFloat(tick.price),
-    reset: resetTimes.includes(tick.timestamp) ? 'Reset' : null,
-  }));
-
-  const config = {
-    data,
-    xField: 'tick',
-    yField: 'price',
-    seriesField: 'reset',
-    point: {
-      size: 5,
-      shape: (item) => (item.reset ? 'diamond' : 'circle'),
-      style: (item) => ({
-        fill: item.reset ? '#f5222d' : '#1890ff',
-      }),
-    },
-    annotations: [
-      {
-        type: 'line',
-        start: ['min', upperBarrier],
-        end: ['max', upperBarrier],
-        style: { stroke: '#f5222d', lineWidth: 2, lineDash: [4, 4] },
-        text: { content: 'Upper Barrier', position: 'end', style: { fill: '#f5222d' } },
-      },
-      {
-        type: 'line',
-        start: ['min', lowerBarrier],
-        end: ['max', lowerBarrier],
-        style: { stroke: '#52c41a', lineWidth: 2, lineDash: [4, 4] },
-        text: { content: 'Lower Barrier', position: 'end', style: { fill: '#52c41a' } },
-      },
-    ],
-    height: 200,
-    autoFit: true,
-  };
-
-  return (
-    <Card size="small" title={<Text style={{ color: 'var(--text-color)' }}>Tick Count & Resets</Text>}>
-      <Line {...config} />
-      <Text type="secondary">Current Tick Count: {tickCount}</Text>
-    </Card>
-  );
-};
-
-const SignalIndicator = ({ signal, strength, size = 'default', showAlert = false }) => {
+// Signal Indicator
+const SignalIndicator = ({ signal, strength, size = 'default' }) => {
   const signalConfig = {
-    safe: { color: '#52c41a', icon: <RiseOutlined />, label: 'SAFE', explanation: 'Low risk of barrier breach' },
-    risk: { color: '#f5222d', icon: <WarningOutlined />, label: 'RISK', explanation: 'High risk of barrier breach' },
-    neutral: { color: '#faad14', icon: <InfoCircleOutlined />, label: 'NEUTRAL', explanation: 'No clear prediction' },
-    hold: { color: '#1890ff', icon: <InfoCircleOutlined />, label: 'HOLD', explanation: 'Avoid trading now' },
+    continue: { color: '#52c41a', icon: <ArrowUpOutlined />, label: 'CONTINUE', explanation: 'Price is stable within the range, favorable for accumulator growth' },
+    reset: { color: '#f5222d', icon: <ArrowDownOutlined />, label: 'RESET', explanation: 'Price breached the range, triggering a reset' },
+    warning: { color: '#fa541c', icon: <WarningOutlined />, label: 'WARNING', explanation: 'High risk of reset due to volatility or barrier proximity' },
   };
-  const config = signalConfig[signal] || signalConfig.neutral;
+  const config = signalConfig[signal] || signalConfig.continue;
   const isSmall = size === 'small';
   return (
     <Tooltip title={config.explanation}>
@@ -137,46 +96,17 @@ const SignalIndicator = ({ signal, strength, size = 'default', showAlert = false
           backgroundColor: isSmall ? 'transparent' : '#fafafa',
           borderRadius: 8,
           border: isSmall ? 'none' : `1px solid ${config.color}`,
-          position: 'relative',
         }}
       >
-        {showAlert && strength > 0.7 && (
-          <div
-            style={{
-              position: 'absolute',
-              left: -12,
-              top: -4,
-              color: config.color,
-              animation: 'pulse 1.5s infinite',
-            }}
-          >
-            <BellOutlined />
-          </div>
-        )}
-        <Badge
-          showZero
-          color={config.color}
-          text={
-            <span
-              style={{
-                color: isSmall ? config.color : 'inherit',
-                fontWeight: 'bold',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 4,
-              }}
-            >
-              {config.icon} {!isSmall && config.label}
-            </span>
-          }
-        />
+        <span style={{ color: isSmall ? config.color : 'inherit', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 4 }}>
+          {config.icon} {!isSmall && config.label}
+        </span>
         {strength > 0 && (
           <Progress
             percent={Math.round(strength * 100)}
             strokeColor={config.color}
             size={isSmall ? 'small' : 'default'}
             showInfo={!isSmall}
-            format={isSmall ? () => `${Math.round(strength * 100)}%` : null}
             style={{ width: isSmall ? 60 : 120 }}
           />
         )}
@@ -185,64 +115,71 @@ const SignalIndicator = ({ signal, strength, size = 'default', showAlert = false
   );
 };
 
+// Analysis Explanation
 const AnalysisExplanation = ({ title, content }) => (
-  <Tooltip
-    title={
-      <div style={{ padding: 8 }}>
-        <Text strong>{title}</Text>
-        <div style={{ marginTop: 4 }}>{content}</div>
-      </div>
-    }
-    style={{ maxWidth: 300 }}
-    placement="right"
-  >
-    <QuestionCircleOutlined style={{ color: '#1890ff', marginLeft: 8 }} />
+  <Tooltip title={<div style={{ padding: 8 }}><Text strong>{title}</Text><div style={{ marginTop: 4 }}>{content}</div></div>} overlayStyle={{ maxWidth: 300 }} placement="right">
+    <InfoCircleOutlined style={{ color: '#1890ff', marginLeft: 8 }} />
   </Tooltip>
 );
 
-const AccumulatorMarketAnalysis = () => {
+const AccumulatorAnalysis = () => {
   const { balance } = useUser();
-  const [symbol, setSymbol] = useState('R_10');
-  const [growthRate, setGrowthRate] = useState('0.01');
   const { token } = theme.useToken();
+  const [symbol, setSymbol] = useState('R_10');
+  const [growthRate, setGrowthRate] = useState(1); // Default to 1%
   const [tickData, setTickData] = useState({});
+  const [resetEvents, setResetEvents] = useState({}); // Track reset events per symbol
   const [loading, setLoading] = useState(true);
-  const [simpleMode, setSimpleMode] = useState(false);
-  const [showAlert, setShowAlert] = useState(true);
   const [error, setError] = useState(null);
-  const [analysisState, setAnalysisState] = useState({}); // Store tickCount, resetTimes, initialPrice per symbol and growth rate
-  const userBalance = balance;
 
-  const formatPrice = (price) => {
-    if (typeof price !== 'number' && typeof price !== 'string') return '--';
-    const priceStr = price.toString().replace(/,/g, '');
-    const [integerPart, decimalPart = ''] = priceStr.split('.');
-    const normalizedDecimal = decimalPart.padEnd(2, '0').slice(0, 2);
-    return `${integerPart}.${normalizedDecimal}`;
-  };
+  // Memoized barriers and reset times
+  const { upperBarrier, lowerBarrier, resetTimes } = useMemo(() => {
+    const ticks = tickData[symbol] || [];
+    if (ticks.length === 0) return { upperBarrier: 0, lowerBarrier: 0, resetTimes: [] };
 
-  // Initialize analysis state for new symbol or growth rate
-  useEffect(() => {
-    setAnalysisState((prev) => ({
-      ...prev,
-      [symbol]: {
-        ...prev[symbol],
-        [growthRate]: {
-          tickCount: 0,
-          resetTimes: [],
-          initialPrice: tickData[symbol]?.[0]?.price ? parseFloat(tickData[symbol][0].price) : 0,
-        },
-      },
-    }));
-  }, [symbol, growthRate, tickData]);
+    const latestPrice = ticks[ticks.length - 1].price;
+    const barrier = barrierLookup[symbol]?.[growthRate] || 0.3829; // Fallback to R_10 1% barrier
+    return {
+      upperBarrier: latestPrice + barrier,
+      lowerBarrier: latestPrice - barrier,
+      resetTimes: resetEvents[symbol] || [],
+    };
+  }, [tickData, symbol, growthRate, resetEvents]);
 
-  // Barrier and tick count logic
-  const barrier = barrierConfig[symbol]?.[growthRate] || 1.0;
-  const currentState = analysisState[symbol]?.[growthRate] || { tickCount: 0, resetTimes: [], initialPrice: 0 };
-  const { tickCount, resetTimes, initialPrice } = currentState;
-  const upperBarrier = initialPrice + barrier;
-  const lowerBarrier = initialPrice - barrier;
+  // Memoized combined signal
+  const combinedSignal = useMemo(() => {
+    const ticks = tickData[symbol] || [];
+    return combineSignals(ticks, symbol, growthRate / 100, balance, upperBarrier, lowerBarrier, ticks.length, resetTimes);
+  }, [tickData, symbol, growthRate, balance, upperBarrier, lowerBarrier, resetTimes]);
 
+  // Price movements with reset markers and ticks before reset
+  const priceMovements = useMemo(() => {
+    const ticks = tickData[symbol] || [];
+    const resetTimestamps = (resetEvents[symbol] || []).map(event => event.timestamp);
+    const movements = [];
+    let tickCounter = 0;
+
+    for (let i = 1; i < ticks.length; i++) {
+      tickCounter++;
+      const isReset = resetTimestamps.includes(ticks[i].timestamp);
+      const movement = {
+        type: ticks[i].price > ticks[i - 1].price ? 'up' : 'down',
+        isReset,
+        timestamp: ticks[i].timestamp,
+      };
+
+      if (isReset) {
+        movement.ticksBeforeReset = tickCounter;
+        tickCounter = 0;
+      }
+
+      movements.push(movement);
+    }
+
+    return movements.reverse();
+  }, [tickData, symbol, resetEvents]);
+
+  // WebSocket subscription
   useEffect(() => {
     let unsubscribers = [];
     let isMounted = true;
@@ -259,11 +196,12 @@ const AccumulatorMarketAnalysis = () => {
           } catch (err) {
             retryCount++;
             console.error(`WebSocket connection failed (attempt ${retryCount}/${maxRetries})`, err);
-            await new Promise((res) => setTimeout(res, 1000 * Math.pow(2, retryCount)));
+            await new Promise(res => setTimeout(res, 1000 * Math.pow(2, retryCount)));
           }
         }
         return false;
       };
+
       try {
         const connected = await connectWithRetry();
         if (!connected) {
@@ -280,53 +218,41 @@ const AccumulatorMarketAnalysis = () => {
           });
           return updated;
         });
+        setResetEvents((prev) => {
+          const updated = { ...prev };
+          volatilityOptions.forEach((option) => {
+            if (!updated[option.value]) updated[option.value] = [];
+          });
+          return updated;
+        });
 
         const handleTick = (event, data) => {
           if (!isMounted) return;
           if (event === 'message' && data.msg_type === 'tick') {
             const { symbol: tickSymbol, quote, epoch } = data.tick;
             setTickData((prev) => {
-              const newTicks = [...(prev[tickSymbol] || []), { price: quote, timestamp: epoch }].slice(-60);
-              // Update tick count and reset times for the current symbol and growth rate
-              if (tickSymbol === symbol) {
-                const currentBarrier = barrierConfig[symbol]?.[growthRate] || 1.0;
-                setAnalysisState((prevState) => {
-                  const state = prevState[symbol]?.[growthRate] || {
-                    tickCount: 0,
-                    resetTimes: [],
-                    initialPrice: parseFloat(quote),
-                  };
-                  const price = parseFloat(quote);
-                  const currentUpper = state.initialPrice + currentBarrier;
-                  const currentLower = state.initialPrice - currentBarrier;
+              const ticks = [...(prev[tickSymbol] || []), { price: quote, timestamp: epoch }].slice(-300);
+              // Check for reset
+              const barrier = barrierLookup[tickSymbol]?.[growthRate] || 0.3829;
+              const prevPrice = ticks.length > 1 ? ticks[ticks.length - 2].price : quote;
+              const upper = prevPrice + barrier;
+              const lower = prevPrice - barrier;
+              if (quote > upper || quote < lower) {
+                setResetEvents((prevEvents) => {
+                  const existing = prevEvents[tickSymbol] || [];
+                  const alreadyExists = existing.some(r => r.timestamp === epoch);
+                  if (alreadyExists) return prevEvents;
 
-                  if (price >= currentLower && price <= currentUpper) {
-                    return {
-                      ...prevState,
-                      [symbol]: {
-                        ...prevState[symbol],
-                        [growthRate]: {
-                          ...state,
-                          tickCount: state.tickCount + 1,
-                        },
-                      },
-                    };
-                  } else {
-                    return {
-                      ...prevState,
-                      [symbol]: {
-                        ...prevState[symbol],
-                        [growthRate]: {
-                          tickCount: 0,
-                          resetTimes: [...state.resetTimes, epoch],
-                          initialPrice: price,
-                        },
-                      },
-                    };
-                  }
+                  return {
+                    ...prevEvents,
+                    [tickSymbol]: [
+                      ...existing.slice(-49),
+                      { timestamp: epoch, price: quote, upperBarrier: upper, lowerBarrier: lower },
+                    ],
+                  };
                 });
               }
-              return { ...prev, [tickSymbol]: newTicks };
+              return { ...prev, [tickSymbol]: ticks };
             });
           } else if (event === 'message' && data.msg_type === 'history') {
             const { ticks_history: symbol, prices, times } = data.echo_req;
@@ -339,45 +265,28 @@ const AccumulatorMarketAnalysis = () => {
                 ...prev,
                 [symbol]: historicalTicks.slice(-60),
               }));
-              // Initialize tick count for historical data
-              if (symbol === symbol) {
-                setAnalysisState((prevState) => {
-                  const state = prevState[symbol]?.[growthRate] || {
-                    tickCount: 0,
-                    resetTimes: [],
-                    initialPrice: historicalTicks[0]?.price ? parseFloat(historicalTicks[0].price) : 0,
-                  };
-                  let count = 0;
-                  let resets = [];
-                  let currentInitial = state.initialPrice;
-                  const currentBarrier = barrierConfig[symbol]?.[growthRate] || 1.0;
-
-                  historicalTicks.forEach((tick) => {
-                    const price = parseFloat(tick.price);
-                    const currentUpper = currentInitial + currentBarrier;
-                    const currentLower = currentInitial - currentBarrier;
-                    if (price >= currentLower && price <= currentUpper) {
-                      count++;
-                    } else {
-                      if (count > 0) resets.push(tick.timestamp);
-                      count = 0;
-                      currentInitial = price;
-                    }
-                  });
-
-                  return {
-                    ...prevState,
-                    [symbol]: {
-                      ...prevState[symbol],
-                      [growthRate]: {
-                        tickCount: count,
-                        resetTimes: resets,
-                        initialPrice: currentInitial,
-                      },
-                    },
-                  };
-                });
-              }
+              // Check historical ticks for resets
+              setResetEvents((prev) => {
+                const barrier = barrierLookup[symbol]?.[growthRate] || 0.3829;
+                const resets = [];
+                let refPrice = historicalTicks[0]?.price || 0;
+                for (let i = 1; i < historicalTicks.length; i++) {
+                  const price = historicalTicks[i].price;
+                  const upper = refPrice + barrier;
+                  const lower = refPrice - barrier;
+                  if (price > upper || price < lower) {
+                    resets.push({
+                      timestamp: historicalTicks[i].timestamp,
+                      price,
+                      upperBarrier: upper,
+                      lowerBarrier: lower,
+                    });
+                    refPrice = price; // Update reference price after reset
+                  }
+                  refPrice = price; // Update reference price each tick
+                }
+                return { ...prev, [symbol]: resets.slice(-50) };
+              });
             }
             setLoading(false);
           } else if (event === 'error') {
@@ -407,9 +316,9 @@ const AccumulatorMarketAnalysis = () => {
 
         await fetchHistorical();
       } catch (err) {
-        console.error('WebSocket Error:', err);
+        console.error('WebSocket connection error:', err);
         if (isMounted) {
-          setError('Failed to connect to WebSocket. Please check your network or app ID.');
+          setError('Unable to connect to market data. Please try again later.');
           setLoading(false);
         }
       }
@@ -423,57 +332,64 @@ const AccumulatorMarketAnalysis = () => {
       volatilityOptions.forEach((option) => publicWebSocket.unsubscribe(option.value));
       publicWebSocket.close();
     };
-  }, [symbol, growthRate]);
+  }, [growthRate]);
 
-  const combinedSignal = useMemo(
-    () => combineSignals(tickData[symbol] || [], symbol, growthRate, userBalance, upperBarrier, lowerBarrier, tickCount, resetTimes),
-    [tickData, symbol, growthRate, userBalance, upperBarrier, lowerBarrier, tickCount, resetTimes]
-  );
-
+  // Analysis functions
   const analyses = [
+    {
+      key: 'priceChange',
+      name: 'Price Stability',
+      func: () => analyzePriceChange(tickData[symbol] || [], symbol, growthRate / 100, upperBarrier, lowerBarrier),
+      explanation: 'Analyzes price stability relative to the accumulator’s range.',
+    },
+    {
+      key: 'resetCount',
+      name: 'Reset Count',
+      func: () => analyzeResetCount(tickData[symbol] || [], resetTimes),
+      explanation: 'Counts reset events when the price breaches the range.',
+    },
+    {
+      key: 'ticksBeforeReset',
+      name: 'Ticks Before Reset',
+      func: () => analyzeTicksBeforeReset(tickData[symbol] || [], resetTimes),
+      explanation: 'Calculates the average number of ticks before a reset occurs.',
+    },
     {
       key: 'momentum',
       name: 'Tick Momentum',
       func: () => analyzeTickMomentum(tickData[symbol] || [], symbol, upperBarrier, lowerBarrier),
-      explanation: 'Measures rate of price changes to predict directional trends toward barriers.',
-    },
-    {
-      key: 'range',
-      name: 'Range Stability',
-      func: () => analyzeRangeStability(tickData[symbol] || [], upperBarrier, lowerBarrier, growthRate),
-      explanation: 'Checks if prices stay within barriers for the selected growth rate.',
-    },
-    {
-      key: 'tickCount',
-      name: 'Tick Count',
-      func: () => analyzeTickCount(tickCount, resetTimes),
-      explanation: 'Tracks number of ticks within range and reset events.',
+      explanation: 'Evaluates price momentum relative to barriers.',
     },
     {
       key: 'volatility',
-      name: 'Volatility',
+      name: 'Volatility Spike',
       func: () => analyzeVolatilitySpike(tickData[symbol] || []),
-      explanation: 'Detects sudden price movements that increase barrier breach risk.',
+      explanation: 'Detects sudden increases in volatility that may trigger resets.',
     },
     {
       key: 'risk',
-      name: 'Risk',
-      func: () => analyzeRisk(balance, symbol),
-      explanation: 'Calculates optimal stake size based on balance and market conditions.',
+      name: 'Risk Analysis',
+      func: () => analyzeRisk(balance, symbol, combinedSignal.signal === 'reset' ? 100 : 50),
+      explanation: 'Recommends stake size based on balance and volatility.',
     },
     {
       key: 'combined',
       name: 'Summary',
       func: () => combinedSignal,
-      explanation: 'Combines indicators to recommend trading or holding.',
+      explanation: 'Aggregates indicators to recommend whether to trade an accumulator contract.',
     },
   ];
 
+  // Render analysis result
   const renderAnalysis = (analysis) => {
-    if (!analysis) return <Text>No data available for analysis.</Text>;
+    if (!analysis || !tickData[symbol] || tickData[symbol].length === 0) {
+      return <Text>No data available for analysis.</Text>;
+    }
 
     const result = analysis.func();
-    if (!result) return null;
+    if (!result) {
+      return <Text>Analysis unavailable.</Text>;
+    }
 
     if (analysis.key === 'combined') {
       const { signal, confidence, details, individualSignals } = result;
@@ -483,26 +399,16 @@ const AccumulatorMarketAnalysis = () => {
             message={
               <Space>
                 <Text strong>Recommendation:</Text>
-                <SignalIndicator
-                  signal={signal}
-                  strength={confidence}
-                  showAlert={showAlert && confidence > 0.7}
-                />
+                <SignalIndicator signal={signal} strength={confidence} />
               </Space>
             }
             description={details}
-            type={signal === 'safe' ? 'success' : signal === 'risk' ? 'error' : 'info'}
+            type={signal === 'continue' ? 'success' : signal === 'reset' ? 'error' : signal === 'warning' ? 'warning' : 'info'}
             showIcon
           />
           <Row gutter={[16, 16]}>
             <Col span={24}>
-              <TickCountChart
-                ticks={tickData[symbol] || []}
-                tickCount={tickCount}
-                resetTimes={resetTimes}
-                upperBarrier={upperBarrier}
-                lowerBarrier={lowerBarrier}
-              />
+              <PriceMovementChart movements={priceMovements} />
             </Col>
           </Row>
           <Collapse ghost>
@@ -524,9 +430,7 @@ const AccumulatorMarketAnalysis = () => {
                     >
                       <Space direction="vertical">
                         <SignalIndicator signal={res?.signal} strength={res?.strength} size="small" />
-                        <Text type="secondary" style={{ color: 'var(--text-color)' }}>
-                          {res?.details || 'No details'}
-                        </Text>
+                        <Text style={{ color: 'var(--text-color)' }}>{res?.details || 'No details'}</Text>
                       </Space>
                     </Card>
                   </Col>
@@ -547,49 +451,31 @@ const AccumulatorMarketAnalysis = () => {
             <AnalysisExplanation title={analysis.name} content={analysis.explanation} />
           </Space>
           <Text>{details}</Text>
-          {analysis.key === 'tickCount' && (
-            <TickCountChart
-              ticks={tickData[symbol]?.slice(0, 10) || []}
-              tickCount={tickCount}
-              resetTimes={resetTimes}
-              upperBarrier={upperBarrier}
-              lowerBarrier={lowerBarrier}
-            />
-          )}
         </Space>
       </Card>
     );
   };
 
   return (
-    <div className="market-analysis-container">
-      <style>{`
-        @keyframes pulse {
-          0% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.2); opacity: 0.7; }
-          100% { transform: scale(1); opacity: 1; }
-        }
-      `}</style>
+    <div className="accumulator-analysis-container">
+      <style>
+        {`
+          @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+          }
+        `}
+      </style>
       <Card
         title={
           <Space>
-            <Title level={4} style={{ margin: 0, color: token.colorPrimary }}>
-              Accumulator Market Analysis
-            </Title>
+            <ThunderboltOutlined style={{ color: token.colorPrimary }} />
+            <Title level={4} style={{ margin: 0, color: token.colorPrimary }}>Accumulator Analysis</Title>
           </Space>
         }
-        extra={
-          <Space>
-            <Tooltip title="Toggle simple mode">
-              <Switch size="small" checked={simpleMode} onChange={setSimpleMode} />
-            </Tooltip>
-            <Tooltip title="Toggle alerts">
-              <Switch size="small" checked={showAlert} onChange={setShowAlert} />
-            </Tooltip>
-          </Space>
-        }
-        className="market-analysis-card"
-        style={{ padding: simpleMode ? '16px 8px' : 16 }}
+        className="accumulator-analysis-card"
+        style={{ padding: 16 }}
       >
         <Space direction="vertical" size="middle" style={{ width: '100%' }}>
           <Row gutter={[16, 16]}>
@@ -619,63 +505,83 @@ const AccumulatorMarketAnalysis = () => {
                   </Option>
                 ))}
               </Select>
-              <div style={{ marginTop: 16 }}>
-                <Select
-                  value={growthRate}
-                  onChange={setGrowthRate}
-                  style={{ width: '100%' }}
-                  placeholder="Select Growth Rate"
-                >
-                  {['0.01', '0.02', '0.03', '0.04', '0.05'].map((rate) => (
-                    <Option key={rate} value={rate}>
-                      Growth Rate: {(parseFloat(rate) * 100).toFixed(0)}%
-                    </Option>
-                  ))}
-                </Select>
-              </div>
             </Col>
             <Col xs={24} md={12}>
+              <Select
+                value={growthRate}
+                onChange={setGrowthRate}
+                style={{ width: '100%' }}
+                placeholder="Select Growth Rate"
+              >
+                {growthRates.map((option) => (
+                  <Option key={option.value} value={option.value}>
+                    {option.label}
+                  </Option>
+                ))}
+              </Select>
+            </Col>
+            <Col xs={24}>
               <Card size="small" style={{ padding: '8px 16px' }}>
                 <Row gutter={16}>
-                  <Col span={12}>
+                  <Col span={8}>
                     <Statistic
                       title={<Text style={{ color: 'var(--text-color)' }}>Current Price</Text>}
-                      value={
-                        tickData[symbol]?.length > 0
-                          ? formatPrice(tickData[symbol][tickData[symbol].length - 1].price)
-                          : '--'
-                      }
+                      value={tickData[symbol]?.length > 0 ? tickData[symbol][tickData[symbol].length - 1].price : '--'}
+                      precision={2}
                       valueStyle={{
-                        color: tickCount === 0 ? '#f5222d' : '#52c41a',
+                        color: tickData[symbol]?.length > 1
+                          ? tickData[symbol][tickData[symbol].length - 1].price > tickData[symbol][tickData[symbol].length - 2].price
+                            ? '#52c41a'
+                            : '#f5222d'
+                          : 'inherit',
                       }}
                     />
                   </Col>
-                  <Col span={12}>
+                  <Col span={8}>
                     <Statistic
-                      title={<Text style={{ color: 'var(--text-color)' }}>Range Status</Text>}
-                      value={tickCount === 0 ? 'Reset' : 'Within Range'}
-                      prefix={<RiseOutlined />}
-                      valueStyle={{
-                        color: tickCount === 0 ? '#f5222d' : '#52c41a',
-                      }}
-                    />
-                  </Col>
-                  <Col span={12}>
-                    <Statistic
-                      title={<Text style={{ color: 'var--text-color)' }}>Tick Count</Text>}
-                      value={tickCount}
-                      prefix={<LineChartOutlined />}
-                    />
-                  </Col>
-                  <Col span={12}>
-                    <Statistic
-                      title={<Text style={{ color: 'var(--text-color)' }}>Last Reset</Text>}
+                      title={<Text style={{ color: 'var(--text-color)' }}>Last Change</Text>}
                       value={
-                        resetTimes.length > 0
-                          ? new Date(resetTimes[resetTimes.length - 1] * 1000).toLocaleTimeString()
+                        tickData[symbol]?.length > 1
+                          ? (tickData[symbol][tickData[symbol].length - 1].price - tickData[symbol][tickData[symbol].length - 2].price).toFixed(2)
                           : '--'
                       }
-                      prefix={<WarningOutlined />}
+                      valueStyle={{
+                        color: tickData[symbol]?.length > 1
+                          ? tickData[symbol][tickData[symbol].length - 1].price > tickData[symbol][tickData[symbol].length - 2].price
+                            ? '#52c41a'
+                            : '#f5222d'
+                          : 'inherit',
+                      }}
+                      prefix={
+                        tickData[symbol]?.length > 1
+                          ? tickData[symbol][tickData[symbol].length - 1].price > tickData[symbol][tickData[symbol].length - 2].price
+                            ? <ArrowUpOutlined />
+                            : <ArrowDownOutlined />
+                          : null
+                      }
+                    />
+                  </Col>
+                  <Col span={8}>
+                    <Statistic
+                      title={<Text style={{ color: 'var(--text-color)' }}>Reset Count</Text>}
+                      value={resetTimes.length}
+                      valueStyle={{ color: resetTimes.length > 2 ? '#f5222d' : 'inherit' }}
+                    />
+                  </Col>
+                </Row>
+                <Row gutter={16} style={{ marginTop: 8 }}>
+                  <Col span={12}>
+                    <Statistic
+                      title={<Text style={{ color: 'var(--text-color)' }}>Upper Barrier</Text>}
+                      value={upperBarrier ? upperBarrier.toFixed(2) : '--'}
+                      precision={2}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Statistic
+                      title={<Text style={{ color: 'var(--text-color)' }}>Lower Barrier</Text>}
+                      value={lowerBarrier ? lowerBarrier.toFixed(2) : '--'}
+                      precision={2}
                     />
                   </Col>
                 </Row>
@@ -684,57 +590,23 @@ const AccumulatorMarketAnalysis = () => {
           </Row>
           {error && <Alert message={error} type="error" showIcon />}
           <Spin spinning={loading} tip="Loading market data...">
-            {simpleMode ? (
-              <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                <Card>
-                  <Space direction="vertical" size="large" style={{ width: '100%' }}>
-                    <SignalIndicator
-                      signal={combinedSignal.signal}
-                      strength={combinedSignal.confidence}
-                      showAlert={showAlert && combinedSignal.confidence > 0.7}
-                    />
-                    <Text>{combinedSignal.details}</Text>
-                    <Text type="secondary" style={{ color: 'var(--text-color)' }}>
-                      <small>Based on {(tickData[symbol] || []).length} recent ticks</small>
-                    </Text>
-                  </Space>
-                </Card>
-                <TickCountChart
-                  ticks={tickData[symbol]?.slice(0, 10) || []}
-                  tickCount={tickCount}
-                  resetTimes={resetTimes}
-                  upperBarrier={upperBarrier}
-                  lowerBarrier={lowerBarrier}
-                />
-              </Space>
-            ) : (
-              <Tabs defaultActiveKey="combined" size="small" tabPosition="top" type="line" style={{ marginTop: 8 }}>
-                {analyses.map((analysis) => (
-                  <TabPane
-                    tab={
-                      <Space size={4}>
-                        <span>{analysis.name}</span>
-                        {analysis.key === 'combined' && (
-                          <Badge
-                            dot
-                            color={
-                              combinedSignal.signal === 'safe'
-                                ? '#52c41a'
-                                : combinedSignal.signal === 'risk'
-                                ? '#f5222d'
-                                : '#faad14'
-                            }
-                          />
-                        )}
-                      </Space>
-                    }
-                    key={analysis.key}
-                  >
-                    {renderAnalysis(analysis)}
-                  </TabPane>
-                ))}
-              </Tabs>
-            )}
+            <Tabs defaultActiveKey="combined" size="small" tabPosition="top" type="line" style={{ marginTop: 8 }}>
+              {analyses.map((analysis) => (
+                <TabPane
+                  tab={
+                    <Space size={4}>
+                      <span>{analysis.name}</span>
+                      {analysis.key === 'combined' && (
+                        <Badge dot color={combinedSignal.signal === 'continue' ? '#52c41a' : combinedSignal.signal === 'reset' ? '#f5222d' : '#fa541c'} />
+                      )}
+                    </Space>
+                  }
+                  key={analysis.key}
+                >
+                  {renderAnalysis(analysis)}
+                </TabPane>
+              ))}
+            </Tabs>
           </Spin>
         </Space>
       </Card>
@@ -742,4 +614,4 @@ const AccumulatorMarketAnalysis = () => {
   );
 };
 
-export default AccumulatorMarketAnalysis;
+export default AccumulatorAnalysis;
